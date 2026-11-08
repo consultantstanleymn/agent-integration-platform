@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     openai_model: str = "llama3.1"
     openai_embed_model: str = "nomic-embed-text"
     anthropic_api_key: SecretStr = SecretStr("")
-    anthropic_model: str = "claude-sonnet-4-5"
+    anthropic_model: str = "claude-sonnet-5-5"
 
     prompts_dir: Path = Path("prompts")
     prompt_version: str = "triage_v1"
