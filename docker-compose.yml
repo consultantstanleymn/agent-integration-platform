@@ -1,0 +1,50 @@
+# Local stack: API + Postgres + mock CRM. Demo defaults only. Set real values in a .env file.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: aip
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aip_dev_password}
+      POSTGRES_DB: aip
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aip"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mock-crm:
+    build: .
+    command: ["uvicorn", "mock_crm.app:app", "--host", "0.0.0.0", "--port", "9001"]
+    entrypoint: []
+    environment:
+      MOCK_CRM_CLIENT_ID: demo-client
+      MOCK_CRM_CLIENT_SECRET: ${CRM_CLIENT_SECRET:-demo-secret}
+    ports:
+      - "9001:9001"
+
+  api:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mock-crm:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql+psycopg://aip:${POSTGRES_PASSWORD:-aip_dev_password}@postgres:5432/aip
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me-demo-admin-token}
+      LLM_PROVIDER: ${LLM_PROVIDER:-fake}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-fake}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-http://host.docker.internal:11434/v1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CRM_BASE_URL: http://mock-crm:9001
+      CRM_CLIENT_ID: demo-client
+      CRM_CLIENT_SECRET: ${CRM_CLIENT_SECRET:-demo-secret}
+      ALLOW_PRIVATE_WEBHOOK_TARGETS: "true"  # demo only: the mock CRM is on a private network
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
