@@ -1,0 +1,41 @@
+# Each case: a question, facts the answer must contain, the source it must cite.
+kb_dir: kb
+tickets:
+  - subject: Printer will not connect
+    body: Customer cannot pair the printer
+cases:
+  - id: refund-window
+    question: How long do customers have to request a full refund?
+    expected_facts: ["30 days"]
+    expected_source: refund-policy.md
+  - id: refund-payback
+    question: How many business days until a refund is paid back?
+    expected_facts: ["5 to 7 business days"]
+    expected_source: refund-policy.md
+  - id: reset-link-expiry
+    question: How long is the password reset link valid?
+    expected_facts: ["60 minutes"]
+    expected_source: password-reset.md
+  - id: account-lock
+    question: How long does an account stay locked after failed sign in attempts?
+    expected_facts: ["15 minutes"]
+    expected_source: password-reset.md
+  - id: express-shipping
+    question: How much does express shipping cost?
+    expected_facts: ["15 dollars"]
+    expected_source: shipping.md
+  - id: premium-sla
+    question: What is the first response time for premium plan customers?
+    expected_facts: ["1 hour"]
+    expected_source: sla.md
+  - id: sev1
+    question: What happens with severity 1 issues such as a full outage?
+    expected_facts: ["on-call engineer"]
+    expected_source: sla.md
+  - id: ticket-status
+    question: What is the status of ticket T-1?
+    expected_facts: ["open", "Printer will not connect"]
+    expected_tool: lookup_ticket
+  - id: unknown-topic
+    question: Do you sell gift cards for the quantum widget?
+    expected_facts: ["could not find"]
