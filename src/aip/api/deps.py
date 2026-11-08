@@ -39,6 +39,7 @@ def current_tenant(
     if not tenant:
         raise HTTPException(401, "invalid API key")
     tenant_id_var.set(tenant.id)
+    request.state.tenant_id = tenant.id  # sync deps run in a thread copy of the context
     wait = request.app.state.rate_limiter.check(f"tenant:{tenant.id}")
     if wait:
         raise HTTPException(429, "rate limit exceeded", headers={"Retry-After": str(int(wait) + 1)})

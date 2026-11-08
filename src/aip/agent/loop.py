@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 from aip.agent.tools import REGISTRY, ToolContext
 from aip.audit import audit
 from aip.models import AgentRun
-from aip.observability import AGENT_RUNS, LLM_CALLS, TOOL_CALLS, redact, span, trace_id_var
+from aip.observability import AGENT_RUNS, LLM_CALLS, TOOL_CALLS, redact, span, tenant_id_var, trace_id_var
 from aip.providers.base import ChatProvider, Message, ProviderError
 
 log = logging.getLogger("aip.agent")
@@ -74,6 +74,7 @@ def run_agent(
     """Run one agent task. Adds rows to the session; the caller commits."""
     q = AgentQuestion(question=question).question
     tenant_id = ctx.tenant.id
+    tenant_id_var.set(tenant_id)  # so spans and logs in this thread carry the tenant
     allowed = set(ctx.tenant.allowed_tools) & set(REGISTRY)
     if only_tools is not None:
         allowed &= only_tools

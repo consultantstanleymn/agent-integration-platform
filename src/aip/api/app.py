@@ -71,6 +71,7 @@ def create_app(
         HTTP_LATENCY.labels(route).observe(elapsed)
         response.headers["X-Request-Id"] = rid
         response.headers["X-Trace-Id"] = trace_id_var.get()
+        tenant_id_var.set(getattr(request.state, "tenant_id", None))
         log.info(
             "request",
             extra={
