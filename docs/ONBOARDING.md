@@ -53,12 +53,20 @@ Python sender:
 
 ```python
 import hashlib, hmac, json, time, requests
+
 body = json.dumps({"event": "ticket.created", "subject": "Refund", "body": "How long do I have?"})
 ts = str(int(time.time()))
 sig = "sha256=" + hmac.new(SECRET.encode(), f"{ts}.{body}".encode(), hashlib.sha256).hexdigest()
-requests.post(f"{BASE}/v1/webhooks/inbound/{TENANT_ID}", data=body,
-              headers={"X-Timestamp": ts, "X-Signature": sig, "Idempotency-Key": "ticket-1001",
-                       "Content-Type": "application/json"})
+requests.post(
+    f"{BASE}/v1/webhooks/inbound/{TENANT_ID}",
+    data=body,
+    headers={
+        "X-Timestamp": ts,
+        "X-Signature": sig,
+        "Idempotency-Key": "ticket-1001",
+        "Content-Type": "application/json",
+    },
+)
 ```
 
 The response holds the new `ticket_id` and the agent's `triage` answer with citations. Retrying the same
