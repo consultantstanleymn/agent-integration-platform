@@ -5,6 +5,7 @@ A case tagged ``approve: true`` or ``approve: false`` gets a team lead decision
 after the graph pauses. The score checks status, action and the approval flag.
 """
 
+import hashlib
 from pathlib import Path
 from typing import Any, Literal
 
@@ -104,6 +105,7 @@ def run_case_suite(path: Path, settings: Settings, chat: ChatProvider | None = N
     passed = sum(1 for r in results if r["passed"])
     return {
         "suite": "cases",
+        "eval_set_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "prompt_version": "case-graph",
         "provider": provider.name,
         "total": len(results),
