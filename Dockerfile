@@ -9,6 +9,10 @@ RUN pip wheel --no-cache-dir --wheel-dir /wheels .
 # Stage 2: small runtime image, non-root user.
 FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+# Pick up security fixes for the Debian packages that the base image tag may lag behind on.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --only-upgrade zlib1g \
+    && rm -rf /var/lib/apt/lists/*
 RUN useradd --create-home --uid 10001 app
 WORKDIR /app
 COPY --from=build /wheels /wheels
