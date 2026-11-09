@@ -1,8 +1,25 @@
-.venv/bin/pytest tests/test_graph_resume.py::test_resume_after_restart -v
-
+# Evidence: Case graph pauses for approval and resumes after a restart (SQLite checkpointer)
+label: VERIFIED LOCALLY
+date: 2026-11-09 06:34 UTC
+code commit: 4affb257e896271ec79a9e9c2939e1c8225a8b38
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: .venv/bin/pytest tests/test_graph_resume.py tests/test_graph_build.py -v -W ignore -o addopts=
+notes: Shows the pause, a new graph on the same SQLite file, and one act call after approval. SQLite only; the Postgres run is a separate evidence file.
+---
 ============================= test session starts ==============================
-collected 1 item
+platform linux -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0 -- ./.venv/bin/python
+cachedir: .pytest_cache
+rootdir: .
+configfile: pyproject.toml
+plugins: anyio-4.16.0, cov-7.1.0, langsmith-0.14.17
+collecting ... collected 5 items
 
-tests/test_graph_resume.py .                                             [100%]
+tests/test_graph_resume.py::test_resume_after_restart PASSED             [ 20%]
+tests/test_graph_build.py::test_graph_node_names PASSED                  [ 40%]
+tests/test_graph_build.py::test_small_refund_completes_without_approval PASSED [ 60%]
+tests/test_graph_build.py::test_large_refund_pauses_for_approval PASSED  [ 80%]
+tests/test_graph_build.py::test_reject_ends_with_rejected_and_no_action PASSED [100%]
 
-============================== 1 passed in 0.26s ===============================
+============================== 5 passed in 0.30s ===============================
+exit code: 0
