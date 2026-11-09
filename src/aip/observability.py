@@ -36,7 +36,7 @@ _PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\b(?:\d[ -]?){13,16}\b"), "[CARD]"),
     (re.compile(r"\+?\d[\d\s().-]{8,}\d"), "[PHONE]"),
 ]
-_SKIP_KEYS = {"trace_id", "request_id", "span_id"}
+_SKIP_KEYS = {"trace_id", "request_id", "span_id", "thread_id", "ra_number"}
 
 
 def redact(value: Any) -> Any:
