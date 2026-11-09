@@ -33,7 +33,8 @@ The project has no lock file. Trivy finds nothing in the repository root. The SB
 | SBOM of source dependencies | Verified locally | `docs/engagement/evidence/sbom-source.cdx.json` |
 | Workflow syntax | actionlint passes. Authored, not run on GitHub | same file |
 | CodeQL job | Authored, not run: needs GitHub Actions | none |
-| Trivy image scan | Authored, not run locally yet. The local image check waits for the image build packet | none |
+| Trivy image scan | Verified locally on the built image. The first scan found two HIGH zlib1g findings with a fix. The Dockerfile now upgrades the package and the second scan is clean | `release-local-build.txt` |
+| SBOM of the image | Verified locally | `sbom-image.cdx.json` |
 | Exceptions check | Verified locally with three unit tests | `tests/test_security_exceptions.py` |
 
 Authored, not run: `.github/workflows/security.yml` is written and syntax-checked with actionlint 1.7.12. It was not executed on GitHub. Reason: needs GitHub Actions.

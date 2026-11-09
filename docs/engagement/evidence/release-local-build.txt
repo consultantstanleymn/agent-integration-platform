@@ -1,0 +1,41 @@
+# Evidence: Local image build, digest, SBOM, image scan, release manifest and acceptance gate
+label: PARTLY RUN
+date: 2026-11-09 11:14 UTC
+code commit: e3a7956090ff63361c2457ef34ec0a92ede35fe2
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: podman build -t localhost/agent-integration-platform:dev .; trivy image --format cyclonedx ...; trivy image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 ...; python scripts/release_manifest.py --image-digest <name@digest>; python scripts/acceptance_gate.py
+notes: Verified locally: build, image digest, SBOM (178 components), image scan (no fixable HIGH or CRITICAL finding after the zlib1g upgrade), manifest, gate, container health check and non-root user (uid 10001). The first image scan, before the upgrade, found two HIGH zlib1g findings; they are shown at the end. Authored, not run: push to the registry and cosign signing in .github/workflows/release.yml (needs GitHub Actions). The digest is the local podman image digest, not a registry digest.
+---
+## podman build (last lines)
+[2/2] STEP 19/19: CMD ["uvicorn", "--factory", "aip.api.app:app_factory", "--host", "0.0.0.0", "--port", "8000"]
+[2/2] COMMIT localhost/agent-integration-platform:dev
+time="2026-11-09T04:48:37-05:00" level=warning msg="HEALTHCHECK is not supported for OCI image format and will be ignored. Must use `docker` format"
+--> 22670db57ba8
+Successfully tagged localhost/agent-integration-platform:dev
+22670db57ba81b700f8fcd000b7c89b6e6e3268c4262d4b0cf782f67370b223b
+rc=0
+digest=sha256:5a365aa2e3821975f05481ff8abd1ec2848d5ac37df5bca791b5b9b883182848 id=22670db57ba81b700f8fcd000b7c89b6e6e3268c4262d4b0cf782f67370b223b
+## sbom
+exit 0
+## trivy HIGH,CRITICAL unfixed ignored
+## trivy result (HIGH and CRITICAL, unfixed ignored)
+Report Summary
+- '0': Clean (no security findings detected)
+exit 0
+## manifest
+wrote /tmp/manifest3.json
+exit 0
+## gate
+ok: acceptance gate passed
+exit 0
+## health check of the image
+{"status":"ok"}
+10001
+rc=0
+
+## before the fix (image built from the commit before the zlib1g upgrade)
+Total: 2 (HIGH: 2, CRITICAL: 0)
+│ zlib1g  │ CVE-2026-76844 │ HIGH     │ fixed  │ 1:1.3.dfsg+really1.3.1-1+b1 │ 1:1.3.dfsg+really1.3.1-1+deb13u1 │ webpack-dev-middleware: webpack-dev-middleware: Information │
+│         │ CVE-2026-85091 │          │        │                             │                                  │ zlib: zlib: Heap buffer overflow in gz_vacate() allows      │
+exit 1
