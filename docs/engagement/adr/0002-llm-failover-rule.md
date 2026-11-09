@@ -4,13 +4,13 @@ Status: accepted.
 
 ## Context
 
-A hosted model can be slow or down. A case run must not hang, and it must not fail only because one provider has a bad hour. The platform has two chat adapters. It needs a rule to move calls from one to the other, and a rule to move back.
+A hosted model can be slow or down. A case run must not hang, and it must not fail only because one provider has a fault. The platform has two chat adapters. It needs a rule to move calls from one to the other, and a rule to move back.
 
 ## Options
 
 1. **No failover.** Simple. A provider problem becomes a customer-visible error.
 2. **Retry only.** Helps with short faults. A long outage makes every call wait for each retry.
-3. **Primary with a breaker and a secondary.** Failed calls go to the second adapter. The breaker stops calls to a sick primary.
+3. **Primary with a breaker and a secondary.** Failed calls go to the second adapter. The breaker stops calls to a failing primary.
 4. **Hedged requests.** Send the call to both adapters and use the first answer. This cuts tail latency but doubles the cost and the token use.
 
 ## Decision

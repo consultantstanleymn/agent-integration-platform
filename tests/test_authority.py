@@ -62,6 +62,18 @@ def test_approval_limit_comes_from_file():
     assert check_authority(state, deps)["needs_approval"] is False
 
 
+def test_amount_equal_to_approval_limit_needs_no_approval():
+    auth = _auth()
+    deps = NodeDeps(
+        provider=None, retrieve=None, approval_limit_minor=0, act=None, record=None, authority=auth
+    )  # type: ignore[arg-type]
+    limit = auth.approval_limit_minor
+    at_limit = CaseState(tenant_id=1, thread_id="t", ticket=_ticket(), proposal=_proposal(amount=limit))
+    above = CaseState(tenant_id=1, thread_id="t", ticket=_ticket(), proposal=_proposal(amount=limit + 1))
+    assert check_authority(at_limit, deps)["needs_approval"] is False
+    assert check_authority(above, deps)["needs_approval"] is True
+
+
 def test_refusal_records_reason_and_no_action(env, tmp_path):
     calls = []
     svc = CaseService(
