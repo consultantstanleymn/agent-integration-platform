@@ -1,0 +1,7 @@
+[
+  {"query": "refund within 30 days"},
+  {"query": "how long does shipping take", "k": 1},
+  {"query": "standard shipping", "k": 5},
+  {"query": "warranty claim for a broken zipper", "k": 2},
+  {"query": "Refund policy", "k": 3}
+]

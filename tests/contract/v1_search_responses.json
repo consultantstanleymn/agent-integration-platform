@@ -1,0 +1,76 @@
+[
+  {
+    "hits": [
+      {
+        "chunk": 0,
+        "doc": "kb.md",
+        "score": 0.7217,
+        "text": "# Refund policy\nCustomers can request a full refund within 30 days of purchase."
+      },
+      {
+        "chunk": 1,
+        "doc": "kb.md",
+        "score": 0.1581,
+        "text": "# Shipping\nStandard shipping takes 3 to 5 business days."
+      }
+    ]
+  },
+  {
+    "hits": [
+      {
+        "chunk": 1,
+        "doc": "kb.md",
+        "score": 0.3162,
+        "text": "# Shipping\nStandard shipping takes 3 to 5 business days."
+      }
+    ]
+  },
+  {
+    "hits": [
+      {
+        "chunk": 1,
+        "doc": "kb.md",
+        "score": 0.6708,
+        "text": "# Shipping\nStandard shipping takes 3 to 5 business days."
+      },
+      {
+        "chunk": 0,
+        "doc": "kb.md",
+        "score": 0.0,
+        "text": "# Refund policy\nCustomers can request a full refund within 30 days of purchase."
+      }
+    ]
+  },
+  {
+    "hits": [
+      {
+        "chunk": 0,
+        "doc": "kb.md",
+        "score": 0.0,
+        "text": "# Refund policy\nCustomers can request a full refund within 30 days of purchase."
+      },
+      {
+        "chunk": 1,
+        "doc": "kb.md",
+        "score": 0.0,
+        "text": "# Shipping\nStandard shipping takes 3 to 5 business days."
+      }
+    ]
+  },
+  {
+    "hits": [
+      {
+        "chunk": 0,
+        "doc": "kb.md",
+        "score": 0.6124,
+        "text": "# Refund policy\nCustomers can request a full refund within 30 days of purchase."
+      },
+      {
+        "chunk": 1,
+        "doc": "kb.md",
+        "score": 0.0,
+        "text": "# Shipping\nStandard shipping takes 3 to 5 business days."
+      }
+    ]
+  }
+]
