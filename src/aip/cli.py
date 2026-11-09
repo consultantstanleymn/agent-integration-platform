@@ -44,6 +44,15 @@ def main(argv: list[str] | None = None) -> int:
     ipsub = ip.add_subparsers(dest="idem_cmd", required=True)
     ipsub.add_parser("purge", help="delete expired idempotency keys")
 
+    wk = sub.add_parser("worker", help="ingest worker")
+    wksub = wk.add_subparsers(dest="worker_cmd", required=True)
+    wksub.add_parser("run-once", help="process one batch of ingest jobs")
+    qu = sub.add_parser("queue", help="ingest queue maintenance")
+    qusub = qu.add_subparsers(dest="queue_cmd", required=True)
+    qusub.add_parser("depth", help="print the dead-letter queue depth")
+    rd = qusub.add_parser("redrive", help="move dead-letter jobs back to the queue")
+    rd.add_argument("--max", type=int, default=10)
+
     e = sub.add_parser("eval", help="run or report evals")
     esub = e.add_subparsers(dest="eval_cmd", required=True)
     r = esub.add_parser("run")
@@ -71,6 +80,25 @@ def main(argv: list[str] | None = None) -> int:
             tenant, key = create_tenant(db, args.name, tools, args.webhook_url)
             db.commit()
             print(json.dumps({"id": tenant.id, "api_key": key, "webhook_secret": tenant.webhook_secret}))
+        return 0
+
+    if args.cmd in ("worker", "queue"):
+        from aip.ports import build_ports
+        from aip.worker import run_once as worker_run_once
+
+        s = Settings()
+        ports = build_ports(s)
+        if args.cmd == "worker":
+            engine = make_engine(s.database_url)
+            try:
+                result = worker_run_once(ports, make_session_factory(engine), build_embedder(s))
+            finally:
+                engine.dispose()
+            print(json.dumps(result))
+        elif args.queue_cmd == "depth":
+            print(json.dumps({"dlq_depth": ports.queue.dlq_depth()}))
+        else:
+            print(json.dumps({"redriven": ports.queue.redrive(args.max)}))
         return 0
 
     if args.cmd == "idempotency":

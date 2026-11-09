@@ -25,6 +25,7 @@ from aip.observability import (
     tenant_id_var,
     trace_id_var,
 )
+from aip.ports import Ports, build_ports
 from aip.providers import build_chat_provider, build_embedder
 from aip.providers.base import ChatProvider, Embedder
 from aip.providers.pricing import load_prices
@@ -40,6 +41,7 @@ def create_app(
     chat: ChatProvider | None = None,
     embedder: Embedder | None = None,
     http: httpx.Client | None = None,
+    ports: Ports | None = None,
 ) -> FastAPI:
     """Build the app. Tests pass fakes for everything that touches the outside world."""
     settings = settings or Settings()
@@ -55,6 +57,7 @@ def create_app(
     app.state.chat = chat or build_chat_provider(settings)
     app.state.embedder = embedder or build_embedder(settings)
     app.state.http = http or httpx.Client(timeout=10)
+    app.state.ports = ports or build_ports(settings)
     app.state.rate_limiter = RateLimiter(settings.rate_limit_per_minute)
     _authority = load_authority(settings.authority_path)
     app.state.case_service = CaseService(

@@ -25,7 +25,6 @@ def check_key(key: str) -> str:
 class LocalBlobStore:
     def __init__(self, root: Path) -> None:
         self.root = Path(root)
-        self.root.mkdir(parents=True, exist_ok=True)
 
     def _path(self, key: str) -> Path:
         path = (self.root / check_key(key)).resolve()

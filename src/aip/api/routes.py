@@ -1,4 +1,5 @@
 import json
+import uuid
 from typing import Any, Literal, cast
 
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Request, Response, UploadFile
@@ -24,6 +25,7 @@ from aip.rag.service import ingest_document, retrieve
 from aip.security import hash_key, new_api_key
 from aip.tenants import ALL_TOOLS, create_tenant
 from aip.tickets import create_ticket, get_ticket
+from aip.worker import job_key
 
 router = APIRouter()
 MAX_UPLOAD = 2_000_000
@@ -46,6 +48,10 @@ class TenantKeyCreate(BaseModel):
 class DocumentIn(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     text: str = Field(min_length=1, max_length=500_000)
+
+
+class AsyncDocumentIn(DocumentIn):
+    access_label: Literal["agent", "team_lead"] = "agent"
 
 
 class SearchIn(BaseModel):
@@ -182,6 +188,32 @@ def add_document(
     audit(db, tenant.id, "document.ingest", name=body.name, chunks=n)
     db.commit()
     return {"name": body.name, "chunks": n}
+
+
+@router.post("/v1/documents/async", status_code=202, tags=["knowledge base"])
+def add_document_async(
+    body: AsyncDocumentIn,
+    request: Request,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, max_length=200),
+) -> dict[str, Any]:
+    """Store the text in the blob store and queue an ingest job. A worker does the rest."""
+    ports = request.app.state.ports
+    blob_key = f"tenants/{tenant.id}/{uuid.uuid4().hex}.txt"
+    ports.blob.put(blob_key, body.text.encode(), "text/plain")
+    job_id = ports.queue.send(
+        {
+            "tenant_id": tenant.id,
+            "blob_key": blob_key,
+            "name": body.name,
+            "access_label": body.access_label,
+            "idempotency_key": idempotency_key or job_key(tenant.id, blob_key),
+        }
+    )
+    audit(db, tenant.id, "document.ingest_queued", name=body.name, job_id=job_id)
+    db.commit()
+    return {"job_id": job_id, "blob_key": blob_key, "status": "queued"}
 
 
 @router.post("/v1/documents/upload", status_code=201, tags=["knowledge base"])
