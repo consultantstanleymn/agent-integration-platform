@@ -1,0 +1,25 @@
+# Evidence: Teardown and an empty check against a moto server
+label: PARTLY RUN
+date: 2026-11-09 08:12 UTC
+code commit: 6c8cf7860bafc070f324a5baf8f79d295a5db8cf
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: scripts/aws_teardown.py --yes, then scripts/aws_verify.py --expect-empty (same moto server)
+notes: PARTLY RUN: ran against moto server 5.x on this laptop (port 25150). Not run against real AWS. Authored, not run: the scripts were not executed against real AWS. Reason: no cloud account by design.
+---
+## teardown dry run
+DRY-RUN would delete bucket aip-engagement-docs (all object versions)
+DRY-RUN would delete queue aip-engagement-ingest
+DRY-RUN would delete queue aip-engagement-ingest-dlq
+DRY-RUN would delete secret aip-engagement/llm-api-key
+## teardown --yes
+DELETE bucket aip-engagement-docs (all object versions)
+DELETE queue aip-engagement-ingest
+DELETE queue aip-engagement-ingest-dlq
+DELETE secret aip-engagement/llm-api-key
+## verify --expect-empty
+PASS bucket is gone
+PASS queue is gone
+PASS DLQ is gone
+PASS secret is gone
+exit code: 0
