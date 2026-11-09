@@ -1,7 +1,7 @@
 from aip.config import Settings
 from aip.providers.anthropic import AnthropicProvider
 from aip.providers.base import ChatProvider, Embedder, ProviderError
-from aip.providers.fake import FakeProvider
+from aip.providers.fake import FakeProvider, SlowFakeProvider
 from aip.providers.openai_compat import OpenAICompatProvider
 from aip.providers.resilience import CircuitBreaker, RetryBudget
 from aip.providers.resilient import ResilientProvider
@@ -18,6 +18,8 @@ def build_chat_provider(s: Settings) -> ChatProvider:
 def _build_chat(s: Settings, provider: str) -> ChatProvider:
     if provider == "fake":
         return FakeProvider()
+    if provider == "fake_slow":
+        return SlowFakeProvider(s.fake_llm_delay_ms)
     if provider == "openai_compat":
         return OpenAICompatProvider(
             s.openai_base_url,

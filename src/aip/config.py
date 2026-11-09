@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     openai_embed_model: str = "nomic-embed-text"
     anthropic_api_key: SecretStr = SecretStr("")
     llm_timeout_seconds: float = 20
+    fake_llm_delay_ms: int = 200  # used only by LLM_PROVIDER=fake_slow, for load tests
     llm_price_per_mtok_json: str = ""  # {"model": {"input": usd, "output": usd}} per million tokens
     llm_fallback_provider: str = ""  # empty: no failover. Else one of fake | openai_compat | anthropic
     anthropic_model: str = "claude-sonnet-5-5"

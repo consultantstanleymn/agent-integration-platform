@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 import re
+import time
 from decimal import Decimal
 
 from aip.providers.base import LLMResponse, Message, ToolCall, ToolSpec, Usage
@@ -170,3 +171,16 @@ class FakeProvider:
         if tool_msg.name == "call_customer_webhook":
             return f"I sent the {data['event']} event to the customer webhook (status {data['status_code']})."
         return "Done."
+
+
+class SlowFakeProvider(FakeProvider):
+    """The fake provider with a fixed delay per chat call. For load tests only (LLM_PROVIDER=fake_slow)."""
+
+    name = "fake_slow"
+
+    def __init__(self, delay_ms: int = 200) -> None:
+        self.delay_ms = delay_ms
+
+    def chat(self, messages: list[Message], tools: list[ToolSpec]) -> LLMResponse:
+        time.sleep(self.delay_ms / 1000)
+        return super().chat(messages, tools)
