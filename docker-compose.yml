@@ -47,8 +47,9 @@ services:
       - "8000:8000"
 
   # The release profile runs the image by digest only. Set AIP_IMAGE to name@sha256:digest.
+  # The default is a placeholder digest that matches no image, so a start without AIP_IMAGE fails.
   api-release:
-    image: ${AIP_IMAGE:?set AIP_IMAGE to name@sha256:digest}
+    image: ${AIP_IMAGE:-localhost/agent-integration-platform@sha256:0000000000000000000000000000000000000000000000000000000000000000}
     profiles: ["release"]
     depends_on:
       postgres:
@@ -60,6 +61,16 @@ services:
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-fake}
     ports:
       - "127.0.0.1:8000:8000"
+
+  # Local trace viewer. Start it with: --profile obs
+  jaeger:
+    image: docker.io/jaegertracing/all-in-one:1.66.0
+    profiles: ["obs"]
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "127.0.0.1:25186:16686"
+      - "127.0.0.1:25118:4318"
 
   # Authored, not run: an optional AWS emulator. Start it with: --profile localstack
   localstack:
