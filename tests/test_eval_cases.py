@@ -41,3 +41,13 @@ def test_cli_cases_suite_exit_code(capsys, monkeypatch):
     monkeypatch.chdir(CASES.parent.parent)
     assert main(["eval", "run", "--suite", "cases", "--min-pass-rate", "0.95"]) == 0
     assert "Pass rate: 62/62" in capsys.readouterr().out
+
+
+def test_cli_eval_cases_json_output(capsys, monkeypatch):
+    import json
+
+    monkeypatch.chdir(CASES.parent.parent)
+    assert main(["eval", "run", "--suite", "cases", "--replay", "--json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["total"] == 62 and report["pass_rate"] == 1.0
+    assert report["cases"][0]["id"]

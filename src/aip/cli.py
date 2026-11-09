@@ -44,6 +44,7 @@ def main(argv: list[str] | None = None) -> int:
     r = esub.add_parser("run")
     r.add_argument("--suite", choices=["qa", "cases"], default="qa")
     r.add_argument("--testset", default=None)
+    r.add_argument("--json", action="store_true", help="print the case report as JSON")
     r.add_argument("--replay", action="store_true", help="answer from stored cassettes, no provider")
     r.add_argument("--cassettes", default="evals/cassettes")
     r.add_argument("--prompt-version", default=None)
@@ -135,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
                     return 1
                 chat = RecordReplayProvider(None, Path(args.cassettes), "replay")
             report = run_case_suite(Path(args.testset or "evals/cases.yaml"), Settings(), chat=chat)
-            print(format_case_report(report))
+            print(json.dumps(report, indent=2) if args.json else format_case_report(report))
             return 0 if report["pass_rate"] >= args.min_pass_rate else 1
         report = run_evals(Path(args.testset or "evals/testset.yaml"), Settings(), args.prompt_version)
         out = Path(args.out)
