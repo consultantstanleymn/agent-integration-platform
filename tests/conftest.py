@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import time
 
 import httpx
@@ -85,6 +86,14 @@ def env():
     yield e
     e.client.close()
     e.engine.dispose()
+
+
+@pytest.fixture
+def pg_url() -> str:
+    url = os.environ.get("AIP_TEST_PG_URL")
+    if not url:
+        pytest.skip("AIP_TEST_PG_URL is not set")
+    return url
 
 
 @pytest.fixture

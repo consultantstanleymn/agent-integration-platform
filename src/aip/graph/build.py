@@ -7,9 +7,12 @@ a process restart.
 """
 
 import sqlite3
+from collections.abc import Iterator
+from contextlib import contextmanager
 from typing import Any
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
+from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.config import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -96,6 +99,14 @@ def build_graph(
 def sqlite_checkpointer(path: str) -> SqliteSaver:
     connection = sqlite3.connect(path, check_same_thread=False)
     return SqliteSaver(connection)
+
+
+@contextmanager
+def postgres_checkpointer(url: str) -> Iterator[PostgresSaver]:
+    conn_string = url.replace("postgresql+psycopg://", "postgresql://", 1)
+    with PostgresSaver.from_conn_string(conn_string) as saver:
+        saver.setup()
+        yield saver
 
 
 def _config(thread_id: str) -> RunnableConfig:

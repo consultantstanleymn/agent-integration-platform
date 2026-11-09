@@ -41,6 +41,7 @@ where = ["src"]
 testpaths = ["tests"]
 pythonpath = ["src", "."]
 addopts = "-q"
+markers = ["pg: needs AIP_TEST_PG_URL"]
 
 [tool.coverage.run]
 source = ["src/aip", "mock_crm"]
