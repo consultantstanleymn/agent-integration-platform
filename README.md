@@ -72,6 +72,14 @@ make check      # ruff, ruff format, mypy, pytest with coverage, evals
 
 Latest local result is in the "Verified" section below.
 
+Case evals run the case graph on 62 tickets. They need no network:
+
+```bash
+aip eval run --suite cases --replay --min-pass-rate 0.95
+```
+
+Cassettes are synthetic. No hosted model response was recorded.
+
 ## Choose a real model
 
 ```bash

@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "572250860b7ae961aaab432a501b15fcabc074a4aa2af1c278cb86e59ac6f284",
+  "response": {
+    "content": "{\"category\": \"warranty\"}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 66,
+      "output_tokens": 6
+    }
+  },
+  "synthetic": true
+}

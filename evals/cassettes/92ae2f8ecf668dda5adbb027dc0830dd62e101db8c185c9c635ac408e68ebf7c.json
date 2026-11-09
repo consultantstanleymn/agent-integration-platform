@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "92ae2f8ecf668dda5adbb027dc0830dd62e101db8c185c9c635ac408e68ebf7c",
+  "response": {
+    "content": "{\"action\": \"escalate\", \"amount_minor\": 0, \"order_id\": \"ORD-4001\", \"reason\": \"escalate under policy\", \"citations\": [\"team-lead-refund-guide.md\", \"store-credit.md\", \"escalation.md\", \"returns.md\", \"shipping-damage.md\"]}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 521,
+      "output_tokens": 54
+    }
+  },
+  "synthetic": true
+}

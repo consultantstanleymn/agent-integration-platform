@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "0f4974b89a8d31d57bc350c79454038273925fb95bf144096c932ea253aadf7b",
+  "response": {
+    "content": "{\"action\": \"escalate\", \"amount_minor\": 0, \"order_id\": null, \"reason\": \"escalate under policy\", \"citations\": [\"shipping-damage.md\", \"warranty.md\", \"returns.md\", \"escalation.md\", \"team-lead-refund-guide.md\"]}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 556,
+      "output_tokens": 52
+    }
+  },
+  "synthetic": true
+}

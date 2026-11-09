@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "a106508f604d6fdb2bea8b3b63f291922e11c5332492fb3b25117f052a9a07cc",
+  "response": {
+    "content": "{\"category\": \"refund\"}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 56,
+      "output_tokens": 6
+    }
+  },
+  "synthetic": true
+}

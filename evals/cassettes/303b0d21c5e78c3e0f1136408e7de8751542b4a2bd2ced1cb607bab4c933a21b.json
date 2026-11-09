@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "303b0d21c5e78c3e0f1136408e7de8751542b4a2bd2ced1cb607bab4c933a21b",
+  "response": {
+    "content": "{\"category\": \"other\"}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 61,
+      "output_tokens": 6
+    }
+  },
+  "synthetic": true
+}

@@ -44,6 +44,8 @@ def main(argv: list[str] | None = None) -> int:
     r = esub.add_parser("run")
     r.add_argument("--suite", choices=["qa", "cases"], default="qa")
     r.add_argument("--testset", default=None)
+    r.add_argument("--replay", action="store_true", help="answer from stored cassettes, no provider")
+    r.add_argument("--cassettes", default="evals/cassettes")
     r.add_argument("--prompt-version", default=None)
     r.add_argument("--out", default="evals/results/latest.json")
     r.add_argument("--min-pass-rate", type=float, default=0.0)
@@ -121,7 +123,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.suite == "cases":
             from aip.evals.cases import format_case_report, run_case_suite
 
-            report = run_case_suite(Path(args.testset or "evals/cases.yaml"), Settings())
+            chat = None
+            if args.replay:
+                from aip.providers.base import ProviderError
+                from aip.providers.replay import RecordReplayProvider, verify_cassettes
+
+                try:
+                    verify_cassettes(Path(args.cassettes))
+                except ProviderError as exc:
+                    print(f"replay gate failed: {exc}", file=sys.stderr)
+                    return 1
+                chat = RecordReplayProvider(None, Path(args.cassettes), "replay")
+            report = run_case_suite(Path(args.testset or "evals/cases.yaml"), Settings(), chat=chat)
             print(format_case_report(report))
             return 0 if report["pass_rate"] >= args.min_pass_rate else 1
         report = run_evals(Path(args.testset or "evals/testset.yaml"), Settings(), args.prompt_version)

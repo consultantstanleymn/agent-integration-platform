@@ -1,0 +1,14 @@
+{
+  "model": "fake",
+  "provider": "fake",
+  "request_digest": "67426cfbeb350b36a13c1a829463a2c4c0054819ab7e57f761b6268698ffc427",
+  "response": {
+    "content": "{\"action\": \"replacement\", \"amount_minor\": 0, \"order_id\": \"ORD-3000\", \"reason\": \"replacement under policy\", \"citations\": [\"team-lead-refund-guide.md\", \"warranty.md\", \"store-credit.md\", \"shipping-damage.md\", \"returns.md\"]}",
+    "tool_calls": [],
+    "usage": {
+      "input_tokens": 537,
+      "output_tokens": 55
+    }
+  },
+  "synthetic": true
+}

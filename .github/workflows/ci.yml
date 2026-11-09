@@ -27,6 +27,8 @@ jobs:
         run: pytest --cov --cov-report=term-missing:skip-covered --cov-fail-under=85
       - name: Evals (fake provider, no network)
         run: aip eval run --min-pass-rate 0.9
+      - name: Case evals (replay, no network)
+        run: aip eval run --suite cases --replay --min-pass-rate 0.95
       - name: Upload eval report
         if: always()
         uses: actions/upload-artifact@v4
