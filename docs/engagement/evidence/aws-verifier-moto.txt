@@ -1,10 +1,10 @@
 # Evidence: Cloud verifier against a moto server
 label: PARTLY RUN
-date: 2026-11-09 08:12 UTC
-code commit: 6c8cf7860bafc070f324a5baf8f79d295a5db8cf
+date: 2026-11-09 11:37 UTC
+code commit: 4004c1111406cdd919e1f0ec6a00425a98849a35
 working tree clean at run time: yes
 machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
-command: see script block in the file: seed, then scripts/aws_verify.py --endpoint-url http://127.0.0.1:25150 (moto_server -p 25150)
+command: scripts/aws_moto_roundtrip.sh (starts moto_server on port 25150, seeds, exports the IAM policy, verifies, dry-runs the teardown, runs teardown --yes, runs verify --expect-empty, stops moto by PID). Run with nice -n 10 from the repo root.
 notes: PARTLY RUN: ran against moto server 5.x on this laptop (port 25150). Not run against real AWS. Authored, not run: the scripts were not executed against real AWS. Reason: no cloud account by design.
 ---
 ## seed
