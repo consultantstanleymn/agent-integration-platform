@@ -19,6 +19,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from aip.audit import audit
+from aip.db import make_session_factory
+from aip.graph.actions import ActionPort, InProcessActionPort
 from aip.graph.authority import Authority
 from aip.graph.build import build_graph, postgres_checkpointer, resume_case, run_case
 from aip.graph.nodes import NodeDeps
@@ -70,6 +72,7 @@ def upsert_case(db: Session, state: CaseState, redactor: Redactor | None = None)
     row.decision = clean.redact(state.decision.model_dump()) if state.decision else None
     row.steps_used = state.steps_used
     row.tokens_used = state.tokens_used
+    row.action_result = state.action_result
     db.flush()
     return row
 
@@ -89,6 +92,7 @@ def case_json(row: Case) -> dict[str, Any]:
         "decision": row.decision,
         "steps_used": row.steps_used,
         "tokens_used": row.tokens_used,
+        "action_result": row.action_result,
         "created_at": row.created_at.isoformat(),
         "updated_at": row.updated_at.isoformat(),
     }
@@ -108,6 +112,7 @@ class CaseService:
         max_tokens: int = 4000,
         authority: Authority | None = None,
         redactor: Redactor | None = None,
+        action_port: ActionPort | None = None,
     ) -> None:
         self.checkpoint_url = checkpoint_url
         self.provider = provider
@@ -117,6 +122,7 @@ class CaseService:
         self.max_tokens = max_tokens
         self.authority = authority
         self.redactor = redactor or default_redactor()
+        self.action_port = action_port
         self._handle: CheckpointerHandle | None = None
 
     def _checkpointer(self) -> BaseCheckpointSaver:
@@ -150,12 +156,24 @@ class CaseService:
             provider=self.provider,
             retrieve=retrieve_hits,
             approval_limit_minor=self.approval_limit_minor,
-            act=lambda state: {"stub": True},
+            act=lambda state: self._act(db, state),
             record=record_state,
             max_steps=self.max_steps,
             max_tokens=self.max_tokens,
             authority=self.authority,
         )
+
+    def _act(self, db: Session, state: CaseState) -> dict[str, Any]:
+        proposal = state.proposal
+        if proposal is None or proposal.action == "escalate":
+            return {"escalated": True}
+        order_id = proposal.order_id or state.ticket.order_id
+        proposal = proposal.model_copy(update={"order_id": order_id})
+        port = self.action_port
+        if port is None:
+            cap = self.authority.hard_cap_minor if self.authority else 50000
+            port = InProcessActionPort(make_session_factory(db.get_bind()), cap)  # type: ignore[arg-type]
+        return port.create_return_authorization(state.tenant_id, proposal, f"{state.thread_id}:act")
 
     def start(
         self,

@@ -1,6 +1,7 @@
 """Settings. Every secret comes from environment variables. Nothing is stored on disk."""
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
     checkpoint_url: str = "sqlite:///./aip-checkpoints.sqlite"
     approval_limit_minor: int = 10000
     authority_path: str = "docs/engagement/AUTHORITY.md"
+    action_port: Literal["mcp", "inprocess"] = "inprocess"
     case_max_steps: int = 6
     case_max_tokens: int = 4000
 

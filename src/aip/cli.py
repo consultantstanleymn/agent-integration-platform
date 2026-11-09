@@ -8,6 +8,7 @@ from pathlib import Path
 
 from aip.config import Settings
 from aip.db import install_audit_triggers, make_engine, make_session_factory
+from aip.graph.actions import build_action_port
 from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.graph.state import Ticket
@@ -68,6 +69,7 @@ def main(argv: list[str] | None = None) -> int:
         engine = make_engine(s.database_url)
         install_audit_triggers(engine)
         factory = make_session_factory(engine)
+        _authority = load_authority(s.authority_path)
         service = CaseService(
             checkpoint_url=s.checkpoint_url,
             provider=build_chat_provider(s),
@@ -75,7 +77,8 @@ def main(argv: list[str] | None = None) -> int:
             approval_limit_minor=s.approval_limit_minor,
             max_steps=s.case_max_steps,
             max_tokens=s.case_max_tokens,
-            authority=load_authority(s.authority_path),
+            authority=_authority,
+            action_port=build_action_port(s.action_port, str(s.database_url), _authority.hard_cap_minor),
         )
         if args.cmd == "cases":
             try:

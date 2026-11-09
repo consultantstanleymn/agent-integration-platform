@@ -12,6 +12,7 @@ from sqlalchemy import Engine
 from aip.api.routes import router
 from aip.config import Settings
 from aip.db import install_audit_triggers, make_engine, make_session_factory
+from aip.graph.actions import build_action_port
 from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.observability import (
@@ -54,6 +55,7 @@ def create_app(
     app.state.embedder = embedder or build_embedder(settings)
     app.state.http = http or httpx.Client(timeout=10)
     app.state.rate_limiter = RateLimiter(settings.rate_limit_per_minute)
+    _authority = load_authority(settings.authority_path)
     app.state.case_service = CaseService(
         checkpoint_url=settings.checkpoint_url,
         provider=app.state.chat,
@@ -61,7 +63,10 @@ def create_app(
         approval_limit_minor=settings.approval_limit_minor,
         max_steps=settings.case_max_steps,
         max_tokens=settings.case_max_tokens,
-        authority=load_authority(settings.authority_path),
+        authority=_authority,
+        action_port=build_action_port(
+            settings.action_port, str(settings.database_url), _authority.hard_cap_minor
+        ),
     )
 
     @app.middleware("http")
