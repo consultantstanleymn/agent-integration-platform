@@ -80,10 +80,23 @@ aip eval run --suite cases --replay --min-pass-rate 0.95
 
 Cassettes are synthetic. No hosted model response was recorded.
 
+## Release record
+
+A release is described by `release/manifest.json`: git SHA, image digest, Alembic head, config hash, prompt version and hash, eval set hashes and the cassette set hash. `scripts/acceptance_gate.py` checks the manifest and the eval evidence. The compose profile `release` runs the image by digest only.
+
+```bash
+podman build -t localhost/agent-integration-platform:dev .
+python scripts/release_manifest.py
+python scripts/acceptance_gate.py
+```
+
+`.github/workflows/release.yml` builds, pushes, signs and attaches an SBOM on a version tag. The workflow is written and not run.
+
 ## Authored, not run
 
 | File or step | What it would do | Why it did not run |
 |---|---|---|
+| `.github/workflows/release.yml` push to the registry and cosign signing | Push an image, sign it by digest, attach the SBOM | Authored, not run: this file is written and syntax-checked with actionlint 1.7.12. It was not executed on GitHub. Reason: needs GitHub Actions |
 | Real hosted model call (Anthropic Messages API adapter, OpenAI-compatible adapter) | Answer chat requests with a hosted model | Authored, not run: this adapter is tested with mocked HTTP only. It was not executed against a hosted model API. Reason: no hosted account or spend cap by design |
 
 This table grows as the work proceeds.

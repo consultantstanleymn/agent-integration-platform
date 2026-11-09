@@ -46,6 +46,21 @@ services:
     ports:
       - "8000:8000"
 
+  # The release profile runs the image by digest only. Set AIP_IMAGE to name@sha256:digest.
+  api-release:
+    image: ${AIP_IMAGE:?set AIP_IMAGE to name@sha256:digest}
+    profiles: ["release"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://aip:${POSTGRES_PASSWORD:-aip_dev_password}@postgres:5432/aip
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me-demo-admin-token}
+      LLM_PROVIDER: ${LLM_PROVIDER:-fake}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-fake}
+    ports:
+      - "127.0.0.1:8000:8000"
+
   # Authored, not run: an optional AWS emulator. Start it with: --profile localstack
   localstack:
     image: docker.io/localstack/localstack:4.0
