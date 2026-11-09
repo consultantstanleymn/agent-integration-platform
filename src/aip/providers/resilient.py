@@ -14,7 +14,7 @@ from aip.providers.resilience import CircuitBreaker, RetryBudget
 LLM_FAILOVER = Counter(
     "aip_llm_failover_total",
     "Chat calls answered by the secondary provider",
-    ["from_provider", "to_provider"],
+    ["from", "to"],
 )
 
 
