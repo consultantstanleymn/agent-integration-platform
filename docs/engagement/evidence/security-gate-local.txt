@@ -5,7 +5,7 @@ code commit: 4278c31bbb49b75268832d7f12d77cfec360c05b
 working tree clean at run time: yes
 machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
 command: see each command line below (run from the repo root)
-notes: Gitleaks, Bandit, Semgrep, pip-audit, SBOM, actionlint and the exceptions check ran. CodeQL and the image scan did not run.
+notes: Gitleaks, Bandit, Semgrep, pip-audit, SBOM, actionlint and the exceptions check ran. CodeQL did not run (needs GitHub Actions). The image scan ran later at another commit: see the section at the end of this file and release-local-build.txt.
 ---
 
 ## gitleaks git --config .gitleaks.toml --redact --no-banner --exit-code 1 .
@@ -40,3 +40,10 @@ exit code: 0
 ## python3 scripts/check_security_exceptions.py security/exceptions.json
 ok: security/exceptions.json
 exit code: 0
+
+
+## image scan, added later (code commit 79ac102139de813a96ca2dc1bf72696c08fdb013)
+command: trivy image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 localhost/agent-integration-platform:dev
+first run (before the Dockerfile upgraded zlib1g): 2 HIGH findings (CVE-2026-76844 and CVE-2026-85091 in zlib1g, fix available), exit code 1
+after the upgrade: Report Summary shows no findings, exit code 0
+full output and the image SBOM: release-local-build.txt and sbom-image.cdx.json
