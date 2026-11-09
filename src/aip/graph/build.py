@@ -7,7 +7,7 @@ a process restart.
 """
 
 import sqlite3
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from typing import Any
 
@@ -49,8 +49,19 @@ def _human_approval(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
     }
 
 
+def _stopped(state: CaseState) -> bool:
+    return state.status in ("refused", "budget_exceeded")
+
+
+def _route_or_record(next_node: str) -> Callable[[CaseState], str]:
+    def route(state: CaseState) -> str:
+        return "record" if _stopped(state) else next_node
+
+    return route
+
+
 def _route_after_check(state: CaseState) -> str:
-    if state.status == "refused":
+    if _stopped(state):
         return "record"
     if state.needs_approval:
         return "human_approval"
@@ -77,9 +88,8 @@ def build_graph(
     builder.add_node("record", lambda state: nodes.record(state, deps))
 
     builder.add_edge(START, "classify")
-    builder.add_edge("classify", "retrieve")
-    builder.add_edge("retrieve", "propose")
-    builder.add_edge("propose", "check_authority")
+    for source, target in (("classify", "retrieve"), ("retrieve", "propose"), ("propose", "check_authority")):
+        builder.add_conditional_edges(source, _route_or_record(target), {target: target, "record": "record"})
     builder.add_conditional_edges(
         "check_authority",
         _route_after_check,

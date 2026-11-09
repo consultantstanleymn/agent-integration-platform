@@ -12,7 +12,7 @@ from typing import Any
 from pydantic import ValidationError
 
 from aip.graph.state import CaseState, Proposal
-from aip.providers.base import ChatProvider, Message
+from aip.providers.base import ChatProvider, LLMResponse, Message
 from aip.rag.store import Hit
 
 CLASSIFY_PROMPT = """CLASSIFY the support ticket into exactly one category.
@@ -36,6 +36,8 @@ class NodeDeps:
     approval_limit_minor: int
     act: Callable[[CaseState], dict[str, Any]]
     record: Callable[[CaseState], None]
+    max_steps: int = 6
+    max_tokens: int = 4000
 
 
 def _json_object(text: str) -> dict[str, Any]:
@@ -54,20 +56,36 @@ def _json_object(text: str) -> dict[str, Any]:
     return data
 
 
+def over_budget(state: CaseState, deps: NodeDeps) -> bool:
+    """Return True when the run has spent its step budget or its token budget."""
+    return state.steps_used >= deps.max_steps or state.tokens_used >= deps.max_tokens
+
+
+def charge(state: CaseState, response: LLMResponse) -> dict[str, Any]:
+    """Return the step and token counters after one LLM call."""
+    usage = response.usage
+    return {
+        "steps_used": state.steps_used + 1,
+        "tokens_used": state.tokens_used + usage.input_tokens + usage.output_tokens,
+    }
+
+
 def classify(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
+    if over_budget(state, deps):
+        return {"status": "budget_exceeded"}
     messages = [
         Message(role="system", content=CLASSIFY_PROMPT),
         Message(role="user", content=f"{state.ticket.subject}\n\n{state.ticket.body}"),
     ]
     response = deps.provider.chat(messages, [])
-    steps = state.steps_used + 1
+    charged = charge(state, response)
     try:
         category = _json_object(response.content).get("category")
     except (ValueError, json.JSONDecodeError):
         category = None
     return {
         "category": category if isinstance(category, str) else None,
-        "steps_used": steps,
+        **charged,
     }
 
 
@@ -78,6 +96,8 @@ def retrieve(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
 
 
 def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
+    if over_budget(state, deps):
+        return {"status": "budget_exceeded"}
     sources = "\n\n".join(
         f"[doc:{item.get('doc', '')}#{item.get('chunk', '')}] {item.get('text', '')}"
         for item in state.retrieved
@@ -90,7 +110,7 @@ def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
         ),
     ]
     response = deps.provider.chat(messages, [])
-    steps = state.steps_used + 1
+    charged = charge(state, response)
     try:
         data = _json_object(response.content)
         proposal = Proposal.model_validate(data)
@@ -98,9 +118,9 @@ def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
         return {
             "status": "refused",
             "refusal_reason": "invalid_proposal",
-            "steps_used": steps,
+            **charged,
         }
-    return {"proposal": proposal, "steps_used": steps}
+    return {"proposal": proposal, **charged}
 
 
 def check_authority(state: CaseState, deps: NodeDeps) -> dict[str, Any]:

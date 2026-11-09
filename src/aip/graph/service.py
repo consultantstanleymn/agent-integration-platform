@@ -96,11 +96,15 @@ class CaseService:
         provider: ChatProvider,
         embedder: Embedder,
         approval_limit_minor: int,
+        max_steps: int = 6,
+        max_tokens: int = 4000,
     ) -> None:
         self.checkpoint_url = checkpoint_url
         self.provider = provider
         self.embedder = embedder
         self.approval_limit_minor = approval_limit_minor
+        self.max_steps = max_steps
+        self.max_tokens = max_tokens
         self._handle: CheckpointerHandle | None = None
 
     def _checkpointer(self) -> BaseCheckpointSaver:
@@ -128,6 +132,8 @@ class CaseService:
             approval_limit_minor=self.approval_limit_minor,
             act=lambda state: {"stub": True},
             record=record_state,
+            max_steps=self.max_steps,
+            max_tokens=self.max_tokens,
         )
 
     def start(

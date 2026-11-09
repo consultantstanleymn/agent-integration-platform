@@ -65,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
             provider=build_chat_provider(s),
             embedder=build_embedder(s),
             approval_limit_minor=s.approval_limit_minor,
+            max_steps=s.case_max_steps,
+            max_tokens=s.case_max_tokens,
         )
         try:
             with factory() as db:

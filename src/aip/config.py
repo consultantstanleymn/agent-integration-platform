@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 60
     checkpoint_url: str = "sqlite:///./aip-checkpoints.sqlite"
     approval_limit_minor: int = 10000
+    case_max_steps: int = 6
+    case_max_tokens: int = 4000
 
     # Mock CRM connector (OAuth2 client credentials)
     crm_base_url: str = "http://localhost:9001"

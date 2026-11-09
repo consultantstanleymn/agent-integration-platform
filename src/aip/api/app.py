@@ -57,6 +57,8 @@ def create_app(
         provider=app.state.chat,
         embedder=app.state.embedder,
         approval_limit_minor=settings.approval_limit_minor,
+        max_steps=settings.case_max_steps,
+        max_tokens=settings.case_max_tokens,
     )
 
     @app.middleware("http")
