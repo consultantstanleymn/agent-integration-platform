@@ -1,3 +1,4 @@
+import hashlib
 import json
 import uuid
 from typing import Any, Literal, cast
@@ -21,7 +22,8 @@ from aip.integrations.oauth import ClientCredentialsTokenProvider
 from aip.integrations.webhooks import UnsafeTargetError, validate_target_url, verify
 from aip.models import AuditLog, Chunk, Document, Tenant, TenantKey, Ticket
 from aip.rag.extract import extract_text
-from aip.rag.service import ingest_document, retrieve
+from aip.rag.retriever import SearchQuery
+from aip.rag.service import build_retriever, ingest_document, labels_for_role, retrieve
 from aip.security import hash_key, new_api_key
 from aip.tenants import ALL_TOOLS, create_tenant
 from aip.tickets import create_ticket, get_ticket
@@ -54,6 +56,14 @@ class DocumentIn(BaseModel):
 class SearchIn(BaseModel):
     query: str = Field(min_length=1, max_length=500)
     k: int = Field(default=3, ge=1, le=10)
+
+
+class SearchV2In(BaseModel):
+    query: str = Field(min_length=1, max_length=500)
+    k: int = Field(default=5, ge=1, le=20)
+    mode: Literal["vector", "keyword", "hybrid"] = "hybrid"
+    doc_names: list[str] | None = Field(default=None, max_length=50)
+    labels: list[Literal["public", "team_lead"]] | None = None
 
 
 class AgentIn(BaseModel):
@@ -183,11 +193,84 @@ def add_document(
     request: Request,
     tenant: Tenant = Depends(current_tenant),
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, max_length=200),
+) -> Any:
+    embedder = request.app.state.embedder
+
+    def ingest() -> dict[str, Any]:
+        n = ingest_document(db, tenant.id, embedder, body.name, body.text, body.access_label)
+        audit(db, tenant.id, "document.ingest", name=body.name, chunks=n)
+        return {"name": body.name, "chunks": n}
+
+    if not idempotency_key:
+        data = ingest()
+        db.commit()
+        return data
+    body_hash = hashlib.sha256(body.model_dump_json().encode()).hexdigest()
+    stored, replayed = run_once(
+        db,
+        tenant.id,
+        f"doc:{idempotency_key}",
+        lambda: {**ingest(), "body_hash": body_hash},
+        ttl_hours=request.app.state.settings.idempotency_ttl_hours,
+    )
+    if stored.get("body_hash") != body_hash:
+        raise HTTPException(422, "Idempotency-Key was already used with a different body")
+    data = {k: v for k, v in stored.items() if k != "body_hash"}
+    headers = {"Idempotent-Replayed": "true"} if replayed else {}
+    return Response(json.dumps(data), status_code=201, media_type="application/json", headers=headers)
+
+
+@router.post("/v2/search", tags=["knowledge base"])
+def search_v2(
+    body: SearchV2In,
+    request: Request,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    n = ingest_document(db, tenant.id, request.app.state.embedder, body.name, body.text, body.access_label)
-    audit(db, tenant.id, "document.ingest", name=body.name, chunks=n)
-    db.commit()
-    return {"name": body.name, "chunks": n}
+    """Search with a mode, filters and provenance. /v1/search stays as it is."""
+    st = request.app.state
+    role_labels = labels_for_role(getattr(request.state, "role", "agent"))
+    wanted = frozenset(body.labels) if body.labels is not None else role_labels
+    if not wanted <= role_labels:
+        raise HTTPException(403, "label not allowed for this key")
+    vector = st.embedder.embed([body.query])[0]
+    query = SearchQuery(
+        tenant_id=tenant.id,
+        text=body.query,
+        vector=vector,
+        k=body.k,
+        mode=body.mode,
+        allowed_labels=wanted,
+        doc_names=body.doc_names,
+    )
+    retriever = build_retriever(db, st.settings.retriever, st.settings.rrf_k)
+    hits = retriever.search(query)
+    docs = {
+        d.id: d
+        for d in db.scalars(
+            select(Document).where(Document.id.in_({h.doc_id for h in hits}), Document.tenant_id == tenant.id)
+        )
+    }
+    return {
+        "api_version": "2",
+        "mode": body.mode,
+        "hits": [
+            {
+                "doc_id": h.doc_id,
+                "doc": h.doc,
+                "chunk": h.chunk,
+                "label": h.label,
+                "source_uri": docs[h.doc_id].source_uri if h.doc_id in docs else None,
+                "ingested_at": docs[h.doc_id].created_at.isoformat() if h.doc_id in docs else None,
+                "score": round(h.score, 6),
+                "scores": {k: round(v, 6) for k, v in h.scores.items()},
+                "ranks": dict(h.rank_by),
+                "text": h.text,
+            }
+            for h in hits
+        ],
+    }
 
 
 @router.post("/v1/documents/async", status_code=202, tags=["knowledge base"])
