@@ -1,0 +1,27 @@
+# Evidence: Static checks on the AWS Terraform files
+label: PARTLY RUN
+date: 2026-11-09 08:09 UTC
+code commit: 2d851e7ce02047bcab098088cb991d17457744dc
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: .venv/bin/pytest tests/test_infra_hcl.py -v -W ignore -o addopts=
+notes: Static tests ran: HCL parses, public access blocked, redrive policy, no IAM wildcard, budget alert. Authored, not run: the HCL is written and syntax-checked with python-hcl2. It was not executed against AWS. Reason: tool not installed (no terraform or tofu) and no cloud account by design.
+---
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0 -- ./.venv/bin/python
+cachedir: .pytest_cache
+rootdir: .
+configfile: pyproject.toml
+plugins: anyio-4.16.0, cov-7.1.0, langsmith-0.14.17
+collecting ... collected 7 items
+
+tests/test_infra_hcl.py::test_hcl_parses PASSED                          [ 14%]
+tests/test_infra_hcl.py::test_public_access_block_all_true PASSED        [ 28%]
+tests/test_infra_hcl.py::test_queue_has_redrive_policy PASSED            [ 42%]
+tests/test_infra_hcl.py::test_iam_policy_has_no_wildcards PASSED         [ 57%]
+tests/test_infra_hcl.py::test_budget_exists_with_notification PASSED     [ 71%]
+tests/test_infra_hcl.py::test_default_tags_present[project] PASSED       [ 85%]
+tests/test_infra_hcl.py::test_default_tags_present[owner] PASSED         [100%]
+
+============================== 7 passed in 0.55s ===============================
+exit code: 0
