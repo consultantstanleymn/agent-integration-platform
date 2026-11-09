@@ -6,6 +6,7 @@ run. The graph itself stays free of database and HTTP details.
 """
 
 import sqlite3
+import threading
 import uuid
 from collections.abc import Callable
 from contextlib import ExitStack
@@ -131,11 +132,17 @@ class CaseService:
         self.action_port = action_port
         self.prices = prices or {}
         self._handle: CheckpointerHandle | None = None
+        self._open_lock = threading.Lock()
 
     def _checkpointer(self) -> BaseCheckpointSaver:
-        if self._handle is None:
-            self._handle = open_checkpointer(self.checkpoint_url)
-        return self._handle.saver
+        with self._open_lock:  # request threads share one checkpointer; open it once
+            if self._handle is None:
+                self._handle = open_checkpointer(self.checkpoint_url)
+            return self._handle.saver
+
+    def warm_up(self) -> None:
+        """Open the checkpointer now, so the first request does not pay for it."""
+        self._checkpointer()
 
     def close(self) -> None:
         if self._handle is not None:

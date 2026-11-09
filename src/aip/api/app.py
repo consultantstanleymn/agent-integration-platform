@@ -92,6 +92,9 @@ def create_app(
         ),
     )
 
+    if settings.checkpoint_url.startswith("postgres"):
+        app.state.case_service.warm_up()  # run the checkpoint setup once, under a lock, at startup
+
     @app.middleware("http")
     async def observe(request: Request, call_next):  # type: ignore[no-untyped-def]
         rid = request.headers.get("x-request-id", "")

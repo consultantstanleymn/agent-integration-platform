@@ -25,6 +25,8 @@ from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Decision
 from aip.observability import span
 
+SETUP_LOCK_ID = 764201  # arbitrary constant for the checkpoint setup lock
+
 NODE_NAMES = (
     "classify",
     "retrieve",
@@ -142,7 +144,13 @@ def postgres_checkpointer(url: str) -> Iterator[PostgresSaver]:
     conn_string = url.replace("postgresql+psycopg://", "postgresql://", 1)
     with PostgresSaver.from_conn_string(conn_string) as saver:
         saver.serde = case_serde()
-        saver.setup()
+        # Several API workers start together. Take an advisory lock so only one runs the setup DDL.
+        conn: Any = saver.conn
+        conn.execute("SELECT pg_advisory_lock(%s)", (SETUP_LOCK_ID,))
+        try:
+            saver.setup()
+        finally:
+            conn.execute("SELECT pg_advisory_unlock(%s)", (SETUP_LOCK_ID,))
         yield saver
 
 
