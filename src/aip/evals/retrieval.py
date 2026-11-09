@@ -149,7 +149,7 @@ def run_retrieval_eval(
 RetrieverFactory = Callable[[Session], Retriever]
 
 
-def prepare_database(engine: Any, url: str) -> None:
+def prepare_database(engine: Any, url: str, embedding_dim: int = 256) -> None:
     """Make a fresh schema. SQLite uses the ORM tables. PostgreSQL is reset and migrated to head."""
     from sqlalchemy import text
 
@@ -174,4 +174,5 @@ def prepare_database(engine: Any, url: str) -> None:
     cfg = Config(str(root / "alembic.ini"))
     cfg.set_main_option("script_location", str(root / "migrations"))
     os.environ["DATABASE_URL"] = url
+    os.environ["EMBEDDING_DIM"] = str(embedding_dim)  # migration 0006 sizes the vector column from this
     command.upgrade(cfg, "head")

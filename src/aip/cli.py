@@ -34,7 +34,7 @@ def _retrieval_command(args: argparse.Namespace) -> int:
     from aip.tenants import create_tenant
 
     engine = make_engine(args.db_url)
-    prepare_database(engine, args.db_url)
+    prepare_database(engine, args.db_url, 384 if args.embedder == "local_onnx" else 256)
     embedder: Any
     if args.embedder == "local_onnx":
         from aip.providers.local_onnx import LocalOnnxEmbedder

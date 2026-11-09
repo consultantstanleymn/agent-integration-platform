@@ -30,6 +30,7 @@ export CHECKPOINT_URL="sqlite:///$WORK/cp.sqlite"
 export ADMIN_TOKEN="trace-demo-admin"
 export OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:25118"
 export LLM_PROVIDER=fake EMBEDDING_PROVIDER=fake
+export OTEL_BSP_SCHEDULE_DELAY=500  # send spans every 0.5 s so a short run is exported
 $PY/alembic upgrade head >/dev/null
 $PY/uvicorn --factory aip.api.app:app_factory --host 127.0.0.1 --port 25100 >"$WORK/api.log" 2>&1 &
 API_PID=$!
@@ -50,7 +51,7 @@ THREAD=$(curl -sf -X POST "$API/v1/cases" -H "X-API-Key: $KEY" -H 'Content-Type:
   -d '{"subject":"Return","body":"Please refund $150.00 for order ORD-5001."}' | jq -r .thread_id)
 curl -sf -X POST "$API/v1/cases/$THREAD/decision" -H "X-API-Key: $LEAD" -H 'Content-Type: application/json' \
   -d '{"decision":"approve","reason":"checked"}' >/dev/null
-sleep 3
+sleep 6
 mkdir -p "$(dirname "$OUT")"
 curl -sf "http://127.0.0.1:25186/api/traces?service=agent-integration-platform&limit=5" -o "$OUT"
 echo "spans in the first trace: $(jq '.data[0].spans | length' "$OUT")"
