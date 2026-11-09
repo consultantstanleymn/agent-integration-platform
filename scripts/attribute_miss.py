@@ -58,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
         embedder = FakeProvider()
 
     engine = make_engine(args.db_url)
-    prepare_database(engine, args.db_url)
+    prepare_database(engine, args.db_url, 384 if args.embedder == "local_onnx" else 256)
     with make_session_factory(engine)() as db:
         tenant, _ = create_tenant(db, "attribution", ["search_knowledge_base"])
         db.commit()
