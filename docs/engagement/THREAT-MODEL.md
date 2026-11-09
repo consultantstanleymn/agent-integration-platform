@@ -50,6 +50,22 @@ flowchart LR
 | 17 | Cross-tenant read of cases | B2 | An agent asks for another tenant case | Tenant filter on every case query | `test_get_case_other_tenant_404` | None known |
 | 18 | Lost state after a restart | B6 | The process stops while a case waits | Checkpointer keeps the paused state | `test_resume_after_restart` | Checkpoint files are not encrypted |
 
+## Rows added for retrieval, cloud adapters, Redis and the supply chain
+
+| # | Threat | Boundary | Example | Control | Test | Residual risk |
+|---|---|---|---|---|---|---|
+| 19 | Team lead document shown to an agent | B2, B7 | An agent searches for refund override rules | Access labels on documents and chunks. Every retriever filters by the labels of the caller role | `test_agent_search_never_returns_team_lead_doc` | A document with the wrong label is exposed. The golden set labels were not reviewed by the owner yet |
+| 20 | Cross-tenant read through search | B2, B6 | A query matches another tenant text | Tenant filter in every retriever | `test_pg_tenant_isolation` | None known |
+| 21 | Label escalation on /v2/search | B2 | An agent asks for `labels: [team_lead]` | The route returns 403 when the labels are not a subset of the role labels | `test_v2_label_escalation_is_403` | None known |
+| 22 | Duplicate document writes on retry | B2 | A client retries a timed-out upload | Idempotency-Key with a body hash | `test_same_key_other_body_422` | Keys expire after 72 hours by default |
+| 23 | Poison ingest job blocks the queue | B6 | A job points to a missing blob | Receive count, then the dead-letter queue, then a safe redrive | `test_poison_message_goes_to_dlq` | Someone must watch the DLQ depth |
+| 24 | Path escape in the blob store | B6 | A key such as `../x` | Key check in every blob adapter | `test_local_blob_rejects_path_escape` | None known |
+| 25 | Over-wide cloud permissions | B6 | The app user can read every bucket | Least-privilege policy in Terraform, checked as text by tests and by the verifier | `test_iam_policy_has_no_wildcards` | The policy was never applied or enforced by real IAM |
+| 26 | Shared rate limit bypass | B2 | A client spreads calls across replicas | A Redis limiter shared by all replicas | `test_two_app_instances_share_the_limit` | Without REDIS_URL the limit is per process |
+| 27 | Poisoned embedding cache | B6 | A bad vector stored under a text key | The key holds the model name and the text hash. Entries expire | `test_cache_key_includes_model` | Whoever can write to Redis can change answers. Keep Redis private |
+| 28 | Vulnerable or unwanted dependency | B6 | A new release brings a known flaw | pip-audit, Bandit, Semgrep and Gitleaks in the security workflow, and a source SBOM | `test_exceptions_file_valid` | The workflow has not run on GitHub. Image scan results depend on the base image |
+| 29 | Unsigned release image | B6 | An image is swapped after the build | A release manifest records the image digest. The workflow signs by digest | `test_gate_fails_without_digest` | Signing is written, not run |
+
 ## Out of scope
 
 This model does not cover the hosting network, the cloud account, or the hosted model vendor. It makes no compliance claim.
