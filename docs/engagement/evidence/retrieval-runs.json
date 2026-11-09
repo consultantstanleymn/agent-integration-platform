@@ -1,0 +1,4587 @@
+{
+ "note": "Raw output of aip eval retrieval. Per-query rows are kept for run 1 of each store. Measured on one laptop.",
+ "rrf_k_tuning": {
+  "rrf_k_10": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 10,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 2.465,
+     "p95_ms": 3.265,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  },
+  "rrf_k_100": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 100,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 2.671,
+     "p95_ms": 3.316,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  },
+  "rrf_k_30": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 30,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 3.012,
+     "p95_ms": 3.505,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  },
+  "rrf_k_60": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 60,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 2.047,
+     "p95_ms": 3.247,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  }
+ },
+ "runs": {
+  "pg_run1": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 60,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 3.001,
+     "p95_ms": 3.165,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    },
+    "keyword": {
+     "mrr": 0.4205,
+     "no_answer_queries": 4,
+     "p50_ms": 1.18,
+     "p95_ms": 1.528,
+     "recall@5": 0.4318,
+     "scored_queries": 44
+    },
+    "vector": {
+     "mrr": 0.8614,
+     "no_answer_queries": 4,
+     "p50_ms": 2.041,
+     "p95_ms": 2.365,
+     "recall@5": 0.9583,
+     "scored_queries": 44
+    }
+   },
+   "per_query": {
+    "hybrid": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models",
+       "repair-service.md#Repair service intake steps",
+       "repair-service.md#Repair warranty period",
+       "returns.md#Restocking fee rules",
+       "rental-gear.md#Rental deposit authorization holds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 0.5,
+      "ranked": [
+       "repair-service.md#Customer shipping responsibilities",
+       "returns.md#Return shipping and RMA",
+       "shipping-damage.md#Waybill inspection",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "warranty.md#Defect claims"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection",
+       "international-returns.md#Return shipping and waybill labels",
+       "holiday-returns.md#Holiday return shipping labels",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Items not accepted for repair",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models",
+       "returns.md#Restocking fee rules",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Gift receipt returns",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions",
+       "gift-cards.md#Gift card exclusions",
+       "price-adjustment.md#Qualifying price adjustment items",
+       "price-adjustment.md#Price adjustment request window",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "returns.md#Return window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "returns.md#Condition and proof of purchase",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Waybill inspection",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements"
+      ],
+      "recall": 0.5,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Condition and proof of purchase",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "price-adjustment.md#Price adjustment refund method",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.25,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "international-returns.md#Restricted international items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#International return window",
+       "international-returns.md#Return shipping and waybill labels",
+       "international-returns.md#Duties and taxes"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 0.5,
+      "ranked": [
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Refund authority limits",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#Shipping and address signals",
+       "fraud-signals.md#Account and contact signals",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "fraud-signals.md#Escalation steps for fraud review",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "fraud-signals.md#What team leads may void",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "team-lead-refund-guide.md#Refund authority limits"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return condition checks",
+       "escalation-matrix.md#Chargeback escalation path",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation",
+       "international-returns.md#Duties and taxes",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return shipping labels",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Exchanges and replacements"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point expiration rules",
+       "store-credit.md#Store credit lookup",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "gift-cards.md#Gift card refunds and chargebacks"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window",
+       "international-returns.md#Currency and refund exchange rate",
+       "holiday-returns.md#Holiday return window date range",
+       "international-returns.md#Return shipping and waybill labels",
+       "returns.md#Return window"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Holiday return shipping labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "holiday-returns.md#Holiday return processing time",
+       "returns.md#Refund timing",
+       "returns.md#Exchanges and replacements",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Store credit expiry and fees",
+       "store-credit.md#Store credit issuance",
+       "store-credit.md#Store credit lookup",
+       "store-credit.md#Store credit balance and use",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Damage waiver coverage"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty points on returns and refunds",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Gift card purchase options",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Gift card balance and redemption",
+       "store-credit.md#Gift receipt returns",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Customer shipping responsibilities",
+       "repair-service.md#Repair lead time and parts",
+       "rental-gear.md#Damage waiver coverage",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Repair and replacement options",
+       "returns.md#Refund timing",
+       "repair-service.md#Diagnostic fee and approval rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Warranty exclusions",
+       "warranty.md#Warranty coverage",
+       "warranty.md#Defect claims",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Defect claims",
+       "repair-service.md#Customer shipping responsibilities",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period",
+       "repair-service.md#Repair lead time and parts"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair service intake steps",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Customer responsibility after delivery"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "warranty.md#Repair and replacement options",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "international-returns.md#International return window",
+       "price-adjustment.md#Price adjustment refund method",
+       "international-returns.md#Duties and taxes",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card exclusions",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Promotional gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ],
+    "keyword": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 0.0,
+      "ranked": [
+       "repair-service.md#Customer shipping responsibilities"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns",
+       "gift-cards.md#Lost or stolen gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Store credit expiry and fees"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Customer shipping responsibilities"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Warranty exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Defect claims"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point value and redemption minimum"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [],
+      "recall": 0.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ],
+    "vector": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models",
+       "repair-service.md#Repair service intake steps",
+       "repair-service.md#Repair warranty period",
+       "returns.md#Restocking fee rules",
+       "rental-gear.md#Rental deposit authorization holds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Return shipping and RMA",
+       "repair-service.md#Customer shipping responsibilities",
+       "shipping-damage.md#Waybill inspection",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "warranty.md#Defect claims"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection",
+       "international-returns.md#Return shipping and waybill labels",
+       "holiday-returns.md#Holiday return shipping labels",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Items not accepted for repair",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models",
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Missing items and carrier notes"
+      ],
+      "recall": 0.6666666666666666,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Gift receipt returns",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions",
+       "gift-cards.md#Gift card exclusions",
+       "price-adjustment.md#Qualifying price adjustment items",
+       "price-adjustment.md#Price adjustment request window",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "returns.md#Return window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "returns.md#Condition and proof of purchase",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Waybill inspection",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements"
+      ],
+      "recall": 0.5,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Condition and proof of purchase",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "price-adjustment.md#Price adjustment refund method",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.25,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "international-returns.md#Restricted international items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#International return window",
+       "international-returns.md#Return shipping and waybill labels",
+       "international-returns.md#Duties and taxes"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 0.5,
+      "ranked": [
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Refund authority limits",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#Shipping and address signals",
+       "fraud-signals.md#Account and contact signals",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "fraud-signals.md#Escalation steps for fraud review",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "fraud-signals.md#What team leads may void",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "team-lead-refund-guide.md#Refund authority limits"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return condition checks",
+       "escalation-matrix.md#Chargeback escalation path",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation",
+       "international-returns.md#Duties and taxes",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return shipping labels",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Exchanges and replacements"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point expiration rules",
+       "store-credit.md#Store credit lookup",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "gift-cards.md#Gift card refunds and chargebacks"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window",
+       "international-returns.md#Currency and refund exchange rate",
+       "holiday-returns.md#Holiday return window date range",
+       "international-returns.md#Return shipping and waybill labels",
+       "returns.md#Return window"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Holiday return shipping labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "holiday-returns.md#Holiday return processing time",
+       "returns.md#Refund timing",
+       "returns.md#Exchanges and replacements",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Store credit expiry and fees",
+       "store-credit.md#Store credit issuance",
+       "store-credit.md#Store credit lookup",
+       "store-credit.md#Store credit balance and use",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Damage waiver coverage"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty points on returns and refunds",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 0.25,
+      "ranked": [
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Gift card balance and redemption",
+       "store-credit.md#Gift receipt returns",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Repair lead time and parts",
+       "rental-gear.md#Damage waiver coverage",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Late return rental fees"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Repair and replacement options",
+       "returns.md#Refund timing",
+       "repair-service.md#Diagnostic fee and approval rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Warranty exclusions",
+       "warranty.md#Warranty coverage",
+       "warranty.md#Defect claims",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Defect claims",
+       "repair-service.md#Customer shipping responsibilities",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period",
+       "repair-service.md#Repair lead time and parts"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair service intake steps",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Customer responsibility after delivery"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "warranty.md#Repair and replacement options",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "international-returns.md#International return window",
+       "price-adjustment.md#Price adjustment refund method",
+       "international-returns.md#Duties and taxes",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Gift card exclusions",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Lost or stolen gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ]
+   },
+   "queries": 48
+  },
+  "pg_run2": {
+   "config": {
+    "db": "postgresql",
+    "embedder": "local_onnx",
+    "retriever": "PgHybridStore",
+    "rrf_k": 60,
+    "store": "pg"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.8557,
+     "no_answer_queries": 4,
+     "p50_ms": 2.531,
+     "p95_ms": 3.103,
+     "recall@5": 0.9659,
+     "scored_queries": 44
+    },
+    "keyword": {
+     "mrr": 0.4205,
+     "no_answer_queries": 4,
+     "p50_ms": 0.815,
+     "p95_ms": 1.154,
+     "recall@5": 0.4318,
+     "scored_queries": 44
+    },
+    "vector": {
+     "mrr": 0.8614,
+     "no_answer_queries": 4,
+     "p50_ms": 1.38,
+     "p95_ms": 2.014,
+     "recall@5": 0.9583,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  },
+  "qdrant_run1": {
+   "config": {
+    "db": "sqlite",
+    "embedder": "local_onnx",
+    "retriever": "QdrantStore",
+    "rrf_k": 60,
+    "store": "qdrant"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.7973,
+     "no_answer_queries": 4,
+     "p50_ms": 12.153,
+     "p95_ms": 13.483,
+     "recall@5": 0.8864,
+     "scored_queries": 44
+    },
+    "keyword": {
+     "mrr": 0.6939,
+     "no_answer_queries": 4,
+     "p50_ms": 8.556,
+     "p95_ms": 10.391,
+     "recall@5": 0.8182,
+     "scored_queries": 44
+    },
+    "vector": {
+     "mrr": 0.8614,
+     "no_answer_queries": 4,
+     "p50_ms": 3.255,
+     "p95_ms": 5.137,
+     "recall@5": 0.9583,
+     "scored_queries": 44
+    }
+   },
+   "per_query": {
+    "hybrid": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models",
+       "repair-service.md#Repair service intake steps",
+       "rental-gear.md#Rental deposit authorization holds",
+       "returns.md#Restocking fee rules",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Return shipping and RMA",
+       "repair-service.md#Customer shipping responsibilities",
+       "shipping-damage.md#Waybill inspection",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Photo evidence requirements"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "holiday-returns.md#Holiday return shipping labels",
+       "international-returns.md#Return shipping and waybill labels",
+       "repair-service.md#Customer shipping responsibilities"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Items not accepted for repair",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models",
+       "returns.md#Restocking fee rules",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Gift receipt returns",
+       "gift-cards.md#Lost or stolen gift cards",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Gift card balance and redemption"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions",
+       "gift-cards.md#Gift card exclusions",
+       "price-adjustment.md#Qualifying price adjustment items",
+       "price-adjustment.md#Price adjustment request window",
+       "bundle-returns.md#Bundle SKU and proof of purchase"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "bundle-returns.md#Bundle return condition rule",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "holiday-returns.md#Holiday return window date range",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Waybill inspection",
+       "escalation-matrix.md#Emergency field safety path",
+       "international-returns.md#Duties and taxes"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "international-returns.md#Currency and refund exchange rate",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Escalation matrix scope",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.3333333333333333,
+      "ranked": [
+       "rental-gear.md#Cleaning and missing parts charges",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "price-adjustment.md#Price match exclusions",
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Loyalty point transfer restrictions",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Partial bundle replacement",
+       "international-returns.md#Restricted international items",
+       "returns.md#Exchanges and replacements",
+       "bundle-returns.md#Bundle promotion adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Chargeback escalation path",
+       "price-adjustment.md#Price adjustment refund method",
+       "international-returns.md#International return window",
+       "international-returns.md#Currency and refund exchange rate"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund authority limits",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "escalation-matrix.md#Escalation matrix scope"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#Shipping and address signals",
+       "fraud-signals.md#Account and contact signals",
+       "fraud-signals.md#Escalation steps for fraud review",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Escalation matrix scope",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Refund authority limits",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "bundle-returns.md#Bundle return condition rule",
+       "escalation-matrix.md#Tier three manager review limit",
+       "international-returns.md#Duties and taxes"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "escalation-matrix.md#Tier three manager review limit",
+       "international-returns.md#Duties and taxes",
+       "bundle-returns.md#Missing bundle component deductions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle SKU and proof of purchase",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return shipping labels",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Exchanges and replacements"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "store-credit.md#Store credit lookup",
+       "returns.md#Return shipping and RMA",
+       "bundle-returns.md#Partial bundle replacement",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window",
+       "international-returns.md#Restricted international items",
+       "holiday-returns.md#Holiday return window date range",
+       "international-returns.md#Chargeback prevention",
+       "international-returns.md#Return shipping and waybill labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "holiday-returns.md#Holiday return condition checks",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Holiday return shipping labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "holiday-returns.md#Holiday return processing time",
+       "returns.md#Refund timing",
+       "shipping-damage.md#Replacement shipment",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Gift receipt holiday return handling"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "escalation-matrix.md#Tier three manager review limit",
+       "store-credit.md#Store credit issuance",
+       "holiday-returns.md#Holiday return processing time",
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Late return rental fees",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Damage waiver coverage"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Loyalty points on returns and refunds",
+       "loyalty-points.md#Loyalty point expiration rules",
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card refunds and chargebacks"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Gift card exclusions",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Customer shipping responsibilities",
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Late return rental fees",
+       "repair-service.md#Repair lead time and parts"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Repair lead time and parts",
+       "holiday-returns.md#Holiday return processing time",
+       "repair-service.md#Repair warranty period",
+       "repair-service.md#Diagnostic fee and approval rules",
+       "returns.md#Refund timing"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 0.25,
+      "ranked": [
+       "warranty.md#Warranty coverage",
+       "gift-cards.md#Gift card exclusions",
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Warranty exclusions",
+       "warranty.md#Defect claims"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Defect claims",
+       "repair-service.md#Repair warranty period",
+       "escalation-matrix.md#Emergency field safety path",
+       "escalation-matrix.md#Tier three manager review limit",
+       "shipping-damage.md#Missing items and carrier notes"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Chargeback escalation path",
+       "bundle-returns.md#Missing bundle component deductions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Missing items and carrier notes",
+       "repair-service.md#Customer shipping responsibilities"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "warranty.md#Repair and replacement options",
+       "repair-service.md#Repair warranty period",
+       "shipping-damage.md#Damage reporting window",
+       "holiday-returns.md#Holiday return shipping labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "international-returns.md#International return window",
+       "holiday-returns.md#Holiday return processing time"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle promotion adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "international-returns.md#International return window",
+       "escalation-matrix.md#Tier three manager review limit",
+       "price-adjustment.md#Price adjustment refund method"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card exclusions",
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card purchase options",
+       "loyalty-points.md#Loyalty point value and redemption minimum"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ],
+    "keyword": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models",
+       "bundle-returns.md#Missing bundle component deductions",
+       "rental-gear.md#Rental deposit authorization holds",
+       "repair-service.md#Repair service intake steps",
+       "returns.md#Restocking fee rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "rental-gear.md#Rental deposit authorization holds",
+       "repair-service.md#Items not accepted for repair",
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 0.5,
+      "ranked": [
+       "repair-service.md#Customer shipping responsibilities",
+       "returns.md#Return shipping and RMA",
+       "gift-cards.md#Lost or stolen gift cards",
+       "international-returns.md#International return window",
+       "international-returns.md#Return shipping and waybill labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "holiday-returns.md#Holiday return shipping labels",
+       "repair-service.md#Customer shipping responsibilities",
+       "bundle-returns.md#Bundle return condition rule"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models",
+       "holiday-returns.md#Holiday return processing time"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier two team lead review limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 0.5,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions",
+       "gift-cards.md#Gift card exclusions",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Partial bundle replacement"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Lost or stolen gift cards",
+       "holiday-returns.md#Holiday return processing time"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "holiday-returns.md#Holiday return condition checks",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "shipping-damage.md#Waybill inspection",
+       "shipping-damage.md#Customer responsibility after delivery"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "international-returns.md#Currency and refund exchange rate",
+       "international-returns.md#Chargeback prevention",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "repair-service.md#Repair warranty period",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "store-credit.md#Store credit expiry and fees",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "holiday-returns.md#Holiday return window date range"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Lost or stolen gift cards",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "price-adjustment.md#Price adjustment request window"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Loyalty point transfer restrictions",
+       "bundle-returns.md#Missing bundle component deductions",
+       "escalation-matrix.md#Tier three manager review limit",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Partial bundle replacement",
+       "price-adjustment.md#Price adjustment refund method",
+       "repair-service.md#Repair warranty period",
+       "store-credit.md#Combining store credit with other payments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Chargeback escalation path",
+       "price-adjustment.md#Price adjustment refund method"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund authority limits",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#Shipping and address signals",
+       "fraud-signals.md#Account and contact signals",
+       "fraud-signals.md#Escalation steps for fraud review",
+       "fraud-signals.md#What team leads may void",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 0.5,
+      "ranked": [
+       "team-lead-refund-guide.md#High-risk refund review",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Partial bundle replacement"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation",
+       "escalation-matrix.md#Tier three manager review limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "bundle-returns.md#Bundle return condition rule"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Partial bundle replacement",
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "bundle-returns.md#Partial bundle replacement",
+       "escalation-matrix.md#Escalation matrix scope",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Lost or stolen gift cards",
+       "price-adjustment.md#Price adjustment processing timeline"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window",
+       "international-returns.md#Restricted international items",
+       "international-returns.md#Chargeback prevention",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle promotion adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Holiday return condition checks"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Refund timing",
+       "holiday-returns.md#Holiday return processing time",
+       "shipping-damage.md#Replacement shipment",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "holiday-returns.md#Holiday return window date range"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [
+       "bundle-returns.md#Partial bundle replacement",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "holiday-returns.md#Holiday return processing time"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Late return rental fees",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "gift-cards.md#Gift card exclusions",
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "gift-cards.md#Gift card exclusions",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price match exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Loyalty points on returns and refunds",
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Lost or stolen gift cards",
+       "store-credit.md#Store credit balance and use",
+       "store-credit.md#Combining store credit with other payments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Gift card balance and redemption",
+       "store-credit.md#Store credit balance and use",
+       "store-credit.md#Combining store credit with other payments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Customer shipping responsibilities",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "gift-cards.md#Gift card exclusions",
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Repair lead time and parts",
+       "gift-cards.md#Gift card exclusions",
+       "holiday-returns.md#Holiday return processing time",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price match exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [
+       "gift-cards.md#Gift card exclusions",
+       "repair-service.md#Repair warranty period",
+       "repair-service.md#Items not accepted for repair",
+       "warranty.md#Warranty coverage",
+       "warranty.md#Covered models"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Defect claims",
+       "escalation-matrix.md#Tier three manager review limit",
+       "escalation-matrix.md#Emergency field safety path",
+       "gift-cards.md#Lost or stolen gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "bundle-returns.md#Missing bundle component deductions",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "returns.md#Exchanges and replacements"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "gift-cards.md#Lost or stolen gift cards",
+       "holiday-returns.md#Holiday return window date range"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "holiday-returns.md#Holiday return shipping labels",
+       "rental-gear.md#Damage waiver coverage",
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Repair and replacement options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "international-returns.md#International return window",
+       "returns.md#Return window",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle SKU and proof of purchase"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "loyalty-points.md#Loyalty point account adjustments",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "bundle-returns.md#Bundle SKU and proof of purchase",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier three manager review limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 0.0,
+      "ranked": [
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Lost or stolen gift cards",
+       "price-adjustment.md#Price adjustment refund method",
+       "store-credit.md#Store credit balance and use",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 0.3333333333333333,
+      "ranked": [
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ],
+    "vector": [
+     {
+      "id": "q01",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Covered models",
+       "repair-service.md#Repair service intake steps",
+       "repair-service.md#Repair warranty period",
+       "returns.md#Restocking fee rules",
+       "rental-gear.md#Rental deposit authorization holds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q02",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Restocking fee rules"
+      ]
+     },
+     {
+      "id": "q03",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "returns.md#Return shipping and RMA",
+       "repair-service.md#Customer shipping responsibilities",
+       "shipping-damage.md#Waybill inspection",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "warranty.md#Defect claims"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return shipping and RMA"
+      ]
+     },
+     {
+      "id": "q04",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Waybill inspection",
+       "international-returns.md#Return shipping and waybill labels",
+       "holiday-returns.md#Holiday return shipping labels",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Waybill inspection"
+      ]
+     },
+     {
+      "id": "q05",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Items not accepted for repair",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models",
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Missing items and carrier notes"
+      ],
+      "recall": 0.6666666666666666,
+      "relevant": [
+       "repair-service.md#Items not accepted for repair",
+       "returns.md#Restocking fee rules",
+       "warranty.md#Covered models"
+      ]
+     },
+     {
+      "id": "q06",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit",
+       "international-returns.md#Chargeback prevention"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Chargeback escalation path"
+      ]
+     },
+     {
+      "id": "q07",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Gift receipt returns",
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card purchase options"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Gift receipt holiday return handling",
+       "store-credit.md#Gift receipt returns"
+      ]
+     },
+     {
+      "id": "q08",
+      "kind": "keyword",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price match exclusions",
+       "gift-cards.md#Gift card exclusions",
+       "price-adjustment.md#Qualifying price adjustment items",
+       "price-adjustment.md#Price adjustment request window",
+       "rental-gear.md#Cleaning and missing parts charges"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price match exclusions"
+      ]
+     },
+     {
+      "id": "q09",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "returns.md#Return window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "returns.md#Condition and proof of purchase",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Return window"
+      ]
+     },
+     {
+      "id": "q10",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "shipping-damage.md#Customer responsibility after delivery",
+       "shipping-damage.md#Waybill inspection",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements"
+      ],
+      "recall": 0.5,
+      "relevant": [
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Photo evidence requirements"
+      ]
+     },
+     {
+      "id": "q11",
+      "kind": "paraphrase",
+      "mrr": 0.0,
+      "ranked": [
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "escalation-matrix.md#Escalation matrix scope",
+       "escalation-matrix.md#Tier three manager review limit"
+      ],
+      "recall": 0.0,
+      "relevant": [
+       "store-credit.md#Store credit balance and use"
+      ]
+     },
+     {
+      "id": "q12",
+      "kind": "paraphrase",
+      "mrr": 0.5,
+      "ranked": [
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Condition and proof of purchase",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Late return rental fees"
+      ]
+     },
+     {
+      "id": "q13",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "price-adjustment.md#Price adjustment refund method",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment request window"
+      ]
+     },
+     {
+      "id": "q14",
+      "kind": "paraphrase",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Loyalty point expiration rules",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Loyalty point expiration rules"
+      ]
+     },
+     {
+      "id": "q15",
+      "kind": "paraphrase",
+      "mrr": 0.25,
+      "ranked": [
+       "bundle-returns.md#Bundle return condition rule",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "international-returns.md#Restricted international items"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Partial bundle replacement"
+      ]
+     },
+     {
+      "id": "q16",
+      "kind": "paraphrase",
+      "mrr": 0.2,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "bundle-returns.md#Bundle return shipping and waybill",
+       "international-returns.md#International return window",
+       "international-returns.md#Return shipping and waybill labels",
+       "international-returns.md#Duties and taxes"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Duties and taxes"
+      ]
+     },
+     {
+      "id": "q17",
+      "kind": "team_lead",
+      "mrr": 0.5,
+      "ranked": [
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Refund authority limits",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund authority limits"
+      ]
+     },
+     {
+      "id": "q18",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#Shipping and address signals",
+       "fraud-signals.md#Account and contact signals",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "fraud-signals.md#Escalation steps for fraud review",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#Shipping and address signals"
+      ]
+     },
+     {
+      "id": "q19",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "fraud-signals.md#What team leads may void",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "team-lead-refund-guide.md#Override approval steps",
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Emergency field safety path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "fraud-signals.md#What team leads may void"
+      ]
+     },
+     {
+      "id": "q20",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Team lead hold and release",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "fraud-signals.md#What team leads may void",
+       "team-lead-refund-guide.md#High-risk refund review",
+       "team-lead-refund-guide.md#Refund authority limits"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Team lead hold and release"
+      ]
+     },
+     {
+      "id": "q21",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return condition checks",
+       "escalation-matrix.md#Chargeback escalation path",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Emergency refund procedure"
+      ]
+     },
+     {
+      "id": "q22",
+      "kind": "team_lead",
+      "mrr": 1.0,
+      "ranked": [
+       "team-lead-refund-guide.md#Refund exception documentation",
+       "international-returns.md#Duties and taxes",
+       "team-lead-refund-guide.md#Coaching notes for refund decisions",
+       "team-lead-refund-guide.md#Emergency refund procedure",
+       "team-lead-refund-guide.md#High-risk refund review"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "team-lead-refund-guide.md#Refund exception documentation"
+      ]
+     },
+     {
+      "id": "q23",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "warranty.md#Covered models"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q24",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "price-adjustment.md#Price adjustment request window",
+       "price-adjustment.md#Price adjustment processing timeline",
+       "escalation-matrix.md#Tier two team lead review limit",
+       "rental-gear.md#Rental deposit authorization holds",
+       "price-adjustment.md#Qualifying price adjustment items"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q25",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "returns.md#Condition and proof of purchase",
+       "holiday-returns.md#Holiday return shipping labels",
+       "holiday-returns.md#Holiday return condition checks",
+       "returns.md#Exchanges and replacements"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q26",
+      "kind": "none",
+      "mrr": null,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "loyalty-points.md#Loyalty point expiration rules",
+       "store-credit.md#Store credit lookup",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "gift-cards.md#Gift card refunds and chargebacks"
+      ],
+      "recall": null,
+      "relevant": []
+     },
+     {
+      "id": "q27",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#International return window",
+       "international-returns.md#Currency and refund exchange rate",
+       "holiday-returns.md#Holiday return window date range",
+       "international-returns.md#Return shipping and waybill labels",
+       "returns.md#Return window"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#International return window"
+      ]
+     },
+     {
+      "id": "q28",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "holiday-returns.md#Holiday restocking fee waiver",
+       "returns.md#Restocking fee rules",
+       "holiday-returns.md#Holiday return condition checks",
+       "holiday-returns.md#Holiday return window date range",
+       "holiday-returns.md#Holiday return shipping labels"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "holiday-returns.md#Holiday restocking fee waiver"
+      ]
+     },
+     {
+      "id": "q29",
+      "kind": "plain",
+      "mrr": 0.5,
+      "ranked": [
+       "holiday-returns.md#Holiday return processing time",
+       "returns.md#Refund timing",
+       "returns.md#Exchanges and replacements",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "returns.md#Refund timing"
+      ]
+     },
+     {
+      "id": "q30",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "store-credit.md#Store credit expiry and fees",
+       "store-credit.md#Store credit issuance",
+       "store-credit.md#Store credit lookup",
+       "store-credit.md#Store credit balance and use",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "store-credit.md#Store credit expiry and fees"
+      ]
+     },
+     {
+      "id": "q31",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Damage waiver coverage",
+       "rental-gear.md#Cleaning and missing parts charges",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Damage waiver coverage"
+      ]
+     },
+     {
+      "id": "q32",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental deposit authorization holds",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Damage waiver coverage"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental deposit authorization holds"
+      ]
+     },
+     {
+      "id": "q33",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty points on returns and refunds",
+       "loyalty-points.md#Loyalty point expiration rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "loyalty-points.md#Earning loyalty points on qualifying purchases"
+      ]
+     },
+     {
+      "id": "q34",
+      "kind": "plain",
+      "mrr": 0.25,
+      "ranked": [
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Gift card purchase options",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card purchase options"
+      ]
+     },
+     {
+      "id": "q35",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Lost or stolen gift cards",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Gift card balance and redemption",
+       "store-credit.md#Gift receipt returns",
+       "gift-cards.md#Gift card exclusions"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Lost or stolen gift cards"
+      ]
+     },
+     {
+      "id": "q36",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Diagnostic fee and approval rules",
+       "repair-service.md#Repair lead time and parts",
+       "rental-gear.md#Damage waiver coverage",
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "rental-gear.md#Late return rental fees"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Diagnostic fee and approval rules"
+      ]
+     },
+     {
+      "id": "q37",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period",
+       "warranty.md#Repair and replacement options",
+       "returns.md#Refund timing",
+       "repair-service.md#Diagnostic fee and approval rules"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "repair-service.md#Repair lead time and parts"
+      ]
+     },
+     {
+      "id": "q38",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Warranty exclusions",
+       "warranty.md#Warranty coverage",
+       "warranty.md#Defect claims",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Warranty exclusions"
+      ]
+     },
+     {
+      "id": "q39",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "warranty.md#Defect claims",
+       "repair-service.md#Customer shipping responsibilities",
+       "warranty.md#Warranty period and proof",
+       "repair-service.md#Repair warranty period",
+       "repair-service.md#Repair lead time and parts"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "warranty.md#Defect claims"
+      ]
+     },
+     {
+      "id": "q40",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Tier one refund and replacement limit",
+       "escalation-matrix.md#Tier three manager review limit",
+       "price-adjustment.md#Price adjustment refund method",
+       "escalation-matrix.md#Chargeback escalation path",
+       "escalation-matrix.md#Tier two team lead review limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ]
+     },
+     {
+      "id": "q41",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "escalation-matrix.md#Emergency field safety path",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair service intake steps",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Customer responsibility after delivery"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "escalation-matrix.md#Emergency field safety path"
+      ]
+     },
+     {
+      "id": "q42",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Replacement shipment",
+       "warranty.md#Repair and replacement options",
+       "shipping-damage.md#Damage reporting window",
+       "repair-service.md#Repair lead time and parts",
+       "repair-service.md#Repair warranty period"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Replacement shipment"
+      ]
+     },
+     {
+      "id": "q43",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "shipping-damage.md#Missing items and carrier notes",
+       "shipping-damage.md#Photo evidence requirements",
+       "shipping-damage.md#Damage reporting window",
+       "shipping-damage.md#Customer responsibility after delivery",
+       "loyalty-points.md#Loyalty point account adjustments"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "shipping-damage.md#Missing items and carrier notes"
+      ]
+     },
+     {
+      "id": "q44",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "bundle-returns.md#Missing bundle component deductions",
+       "bundle-returns.md#Bundle return condition rule",
+       "bundle-returns.md#Bundle promotion adjustments",
+       "bundle-returns.md#Partial bundle replacement",
+       "bundle-returns.md#Bundle return shipping and waybill"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "bundle-returns.md#Missing bundle component deductions"
+      ]
+     },
+     {
+      "id": "q45",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "price-adjustment.md#Price adjustment and loyalty points",
+       "loyalty-points.md#Loyalty point account adjustments",
+       "loyalty-points.md#Loyalty point value and redemption minimum",
+       "loyalty-points.md#Earning loyalty points on qualifying purchases",
+       "loyalty-points.md#Loyalty points on returns and refunds"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "price-adjustment.md#Price adjustment and loyalty points"
+      ]
+     },
+     {
+      "id": "q46",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "international-returns.md#Currency and refund exchange rate",
+       "international-returns.md#International return window",
+       "price-adjustment.md#Price adjustment refund method",
+       "international-returns.md#Duties and taxes",
+       "escalation-matrix.md#Tier one refund and replacement limit"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "international-returns.md#Currency and refund exchange rate"
+      ]
+     },
+     {
+      "id": "q47",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "gift-cards.md#Gift card exclusions",
+       "gift-cards.md#Gift card balance and redemption",
+       "gift-cards.md#Gift card refunds and chargebacks",
+       "gift-cards.md#Promotional gift cards",
+       "gift-cards.md#Lost or stolen gift cards"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "gift-cards.md#Gift card exclusions"
+      ]
+     },
+     {
+      "id": "q48",
+      "kind": "plain",
+      "mrr": 1.0,
+      "ranked": [
+       "rental-gear.md#Rental gear exclusions and maximum period",
+       "rental-gear.md#Rental eligibility and age requirement",
+       "rental-gear.md#Late return rental fees",
+       "rental-gear.md#Rental deposit authorization holds",
+       "warranty.md#Covered models"
+      ],
+      "recall": 1.0,
+      "relevant": [
+       "rental-gear.md#Rental gear exclusions and maximum period"
+      ]
+     }
+    ]
+   },
+   "queries": 48
+  },
+  "qdrant_run2": {
+   "config": {
+    "db": "sqlite",
+    "embedder": "local_onnx",
+    "retriever": "QdrantStore",
+    "rrf_k": 60,
+    "store": "qdrant"
+   },
+   "k": 5,
+   "modes": {
+    "hybrid": {
+     "mrr": 0.7973,
+     "no_answer_queries": 4,
+     "p50_ms": 10.498,
+     "p95_ms": 11.637,
+     "recall@5": 0.8864,
+     "scored_queries": 44
+    },
+    "keyword": {
+     "mrr": 0.6939,
+     "no_answer_queries": 4,
+     "p50_ms": 7.044,
+     "p95_ms": 8.844,
+     "recall@5": 0.8182,
+     "scored_queries": 44
+    },
+    "vector": {
+     "mrr": 0.8614,
+     "no_answer_queries": 4,
+     "p50_ms": 3.048,
+     "p95_ms": 3.369,
+     "recall@5": 0.9583,
+     "scored_queries": 44
+    }
+   },
+   "queries": 48
+  }
+ }
+}
