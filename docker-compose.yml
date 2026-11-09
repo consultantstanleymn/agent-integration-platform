@@ -46,5 +46,14 @@ services:
     ports:
       - "8000:8000"
 
+  # Authored, not run: an optional AWS emulator. Start it with: --profile localstack
+  localstack:
+    image: docker.io/localstack/localstack:4.0
+    profiles: ["localstack"]
+    environment:
+      SERVICES: s3,sqs,secretsmanager
+    ports:
+      - "127.0.0.1:25166:4566"
+
 volumes:
   pgdata:
