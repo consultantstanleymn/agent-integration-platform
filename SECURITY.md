@@ -28,7 +28,7 @@ or penetration test. This file lists what exists and what does not.
 | Secrets management | Env vars; Secrets Manager in Terraform | Done / defined |
 | Secret rotation | Rotation of API keys, webhook secrets, admin token | Not done |
 | Logging and audit | Audit table (tenant, request id, trace id, action) and JSON logs | Done |
-| Audit log integrity | Append-only protection, export, retention policy | Not done |
+| Audit log integrity | Append-only database triggers (migration 0003). Export and retention policy are not done | Partial |
 | Monitoring | Prometheus metrics, one CloudWatch alarm | Basic |
 | Change management | CI runs lint, types, tests, evals on each PR | Done (never run on GitHub yet) |
 | Vulnerability management | Dependency scanning, container scanning | Not done |
@@ -48,5 +48,6 @@ or penetration test. This file lists what exists and what does not.
 - **Admin API** uses one shared token. There is no per-admin identity.
 - Outbound webhooks carry no idempotency key from the agent tool yet. Receivers cannot de-duplicate retries from the tool.
 - The idempotency key table never expires.
+- A database owner can still drop the audit trigger. The trigger stops application code and ordinary users, not the owner.
 
 Report issues to the repository owner.

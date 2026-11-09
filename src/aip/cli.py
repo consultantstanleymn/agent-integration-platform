@@ -3,10 +3,11 @@
 import argparse
 import json
 import sys
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from aip.config import Settings
-from aip.db import make_engine, make_session_factory
+from aip.db import install_audit_triggers, make_engine, make_session_factory
 from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.graph.state import Ticket
@@ -31,6 +32,11 @@ def main(argv: list[str] | None = None) -> int:
     cs.add_argument("--subject", required=True)
     cs.add_argument("--body", default="")
     cs.add_argument("--order-id", default=None)
+
+    ce = sub.add_parser("cases", help="case maintenance")
+    cesub = ce.add_subparsers(dest="cases_cmd", required=True)
+    ex = cesub.add_parser("expire", help="reject approvals that wait too long")
+    ex.add_argument("--older-than-hours", type=float, default=24.0)
 
     e = sub.add_parser("eval", help="run or report evals")
     esub = e.add_subparsers(dest="eval_cmd", required=True)
@@ -57,9 +63,10 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"id": tenant.id, "api_key": key, "webhook_secret": tenant.webhook_secret}))
         return 0
 
-    if args.cmd == "case":
+    if args.cmd in ("case", "cases"):
         s = Settings()
         engine = make_engine(s.database_url)
+        install_audit_triggers(engine)
         factory = make_session_factory(engine)
         service = CaseService(
             checkpoint_url=s.checkpoint_url,
@@ -70,6 +77,17 @@ def main(argv: list[str] | None = None) -> int:
             max_tokens=s.case_max_tokens,
             authority=load_authority(s.authority_path),
         )
+        if args.cmd == "cases":
+            try:
+                with factory() as db:
+                    count = service.expire_pending(
+                        db, datetime.now(UTC), timedelta(hours=args.older_than_hours)
+                    )
+                print(json.dumps({"expired": count}))
+            finally:
+                service.close()
+                engine.dispose()
+            return 0
         try:
             with factory() as db:
                 case_tenant = db.get(Tenant, args.tenant_id)

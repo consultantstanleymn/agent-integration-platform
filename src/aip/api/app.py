@@ -11,7 +11,7 @@ from sqlalchemy import Engine
 
 from aip.api.routes import router
 from aip.config import Settings
-from aip.db import make_engine, make_session_factory
+from aip.db import install_audit_triggers, make_engine, make_session_factory
 from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.observability import (
@@ -48,6 +48,7 @@ def create_app(
     )
     app.state.settings = settings
     app.state.engine = engine or make_engine(settings.database_url)
+    install_audit_triggers(app.state.engine)
     app.state.session_factory = make_session_factory(app.state.engine)
     app.state.chat = chat or build_chat_provider(settings)
     app.state.embedder = embedder or build_embedder(settings)

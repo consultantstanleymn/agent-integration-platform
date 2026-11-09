@@ -10,6 +10,7 @@ import uuid
 from collections.abc import Callable
 from contextlib import ExitStack
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from typing import Any, Literal
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -69,6 +70,10 @@ def upsert_case(db: Session, state: CaseState) -> Case:
     row.tokens_used = state.tokens_used
     db.flush()
     return row
+
+
+def _awaiting(db: Session) -> list[Case]:
+    return list(db.scalars(select(Case).where(Case.status == "awaiting_approval").order_by(Case.id)))
 
 
 def case_json(row: Case) -> dict[str, Any]:
@@ -171,7 +176,7 @@ class CaseService:
         db: Session,
         tenant: Tenant,
         thread_id: str,
-        decision: Literal["approve", "reject"],
+        decision: Literal["approve", "reject", "expired"],
         actor: str,
         reason: str = "",
     ) -> CaseState:
@@ -182,13 +187,26 @@ class CaseService:
         audit(
             db,
             tenant.id,
-            "case.approved" if decision == "approve" else "case.rejected",
+            {"approve": "case.approved", "reject": "case.rejected", "expired": "case.expired"}[decision],
             thread_id=thread_id,
             actor=actor,
             reason=reason,
         )
         db.commit()
         return result
+
+    def expire_pending(self, db: Session, now: datetime, older_than: timedelta) -> int:
+        """Resume every approval that waited longer than ``older_than`` with decision ``expired``."""
+        cutoff = now - older_than
+        expired = 0
+        for row in _awaiting(db):
+            updated = row.updated_at if row.updated_at.tzinfo else row.updated_at.replace(tzinfo=UTC)
+            if updated <= cutoff:
+                tenant = db.get(Tenant, row.tenant_id)
+                if tenant is not None:
+                    self.decide(db, tenant, row.thread_id, "expired", "system", "approval expired")
+                    expired += 1
+        return expired
 
     def list_cases(self, db: Session, tenant: Tenant, status: str | None = None) -> list[Case]:
         query = select(Case).where(Case.tenant_id == tenant.id).order_by(Case.id)
