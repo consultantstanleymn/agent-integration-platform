@@ -72,6 +72,8 @@ class Document(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"), index=True)
     name: Mapped[str] = mapped_column(String(200))
+    access_label: Mapped[str] = mapped_column(String(30), default="public", server_default="public")
+    source_uri: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
@@ -83,6 +85,7 @@ class Chunk(Base):
     idx: Mapped[int] = mapped_column(Integer)
     text: Mapped[str] = mapped_column(Text)
     embedding: Mapped[list[float]] = mapped_column(JSON)
+    access_label: Mapped[str] = mapped_column(String(30), default="public", server_default="public")
 
 
 class Ticket(Base):
