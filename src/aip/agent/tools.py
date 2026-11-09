@@ -1,5 +1,6 @@
 """The four tools. Each has a pydantic argument model (this is the input validation)."""
 
+import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
@@ -24,6 +25,8 @@ class ToolContext:
     http: httpx.Client
     settings: Settings
     retrieved: dict[str, dict[str, Any]] = field(default_factory=dict)  # citation id -> hit
+    run_key: str = field(default_factory=lambda: uuid.uuid4().hex)  # names this run in outbound event ids
+    event_seq: int = 0  # counts outbound events in this run
 
 
 class SearchArgs(BaseModel):
@@ -75,7 +78,15 @@ def call_customer_webhook(ctx: ToolContext, a: WebhookArgs) -> dict[str, Any]:
     if not url:
         return {"error": "tenant has no webhook_url configured"}
     validate_target_url(url, ctx.settings.allow_private_webhook_targets)
-    res = send_webhook(url, ctx.tenant.webhook_secret, {"event": a.event, "data": a.payload}, client=ctx.http)
+    ctx.event_seq += 1
+    event_id = f"{ctx.run_key}:{ctx.event_seq}"  # same id on every retry of this delivery
+    res = send_webhook(
+        url,
+        ctx.tenant.webhook_secret,
+        {"event": a.event, "data": a.payload},
+        client=ctx.http,
+        idempotency_key=event_id,
+    )
     if not res.ok:
         return {"error": f"webhook delivery failed after {res.attempts} attempts (status {res.status_code})"}
     return {"event": a.event, "status_code": res.status_code, "attempts": res.attempts}

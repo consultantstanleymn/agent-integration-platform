@@ -46,8 +46,7 @@ or penetration test. This file lists what exists and what does not.
 - **PII redaction** uses regular expressions. It misses names and addresses. Question text and answers are stored
   redacted, but the knowledge base itself is stored as uploaded.
 - **Admin API** uses one shared token. There is no per-admin identity.
-- Outbound webhooks carry no idempotency key from the agent tool yet. Receivers cannot de-duplicate retries from the tool.
-- The idempotency key table never expires.
+- Idempotency keys expire after 72 hours by default. Rows from before the expiry column have no expiry; `aip idempotency purge` removes only keys that have one.
 - A database owner can still drop the audit trigger. The trigger stops application code and ordinary users, not the owner.
 
 Report issues to the repository owner.

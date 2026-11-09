@@ -115,6 +115,7 @@ class IdempotencyKey(Base):
     key: Mapped[str] = mapped_column(String(200))
     response: Mapped[dict[str, Any]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class AgentRun(Base):

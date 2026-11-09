@@ -39,6 +39,10 @@ def main(argv: list[str] | None = None) -> int:
     ex = cesub.add_parser("expire", help="reject approvals that wait too long")
     ex.add_argument("--older-than-hours", type=float, default=24.0)
 
+    ip = sub.add_parser("idempotency", help="idempotency key maintenance")
+    ipsub = ip.add_subparsers(dest="idem_cmd", required=True)
+    ipsub.add_parser("purge", help="delete expired idempotency keys")
+
     e = sub.add_parser("eval", help="run or report evals")
     esub = e.add_subparsers(dest="eval_cmd", required=True)
     r = esub.add_parser("run")
@@ -66,6 +70,17 @@ def main(argv: list[str] | None = None) -> int:
             tenant, key = create_tenant(db, args.name, tools, args.webhook_url)
             db.commit()
             print(json.dumps({"id": tenant.id, "api_key": key, "webhook_secret": tenant.webhook_secret}))
+        return 0
+
+    if args.cmd == "idempotency":
+        from aip.integrations.idempotency import purge_expired
+
+        engine = make_engine(Settings().database_url)
+        try:
+            with make_session_factory(engine)() as db:
+                print(json.dumps({"purged": purge_expired(db)}))
+        finally:
+            engine.dispose()
         return 0
 
     if args.cmd in ("case", "cases"):

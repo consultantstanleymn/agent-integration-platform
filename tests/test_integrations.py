@@ -253,3 +253,29 @@ def test_crm_ingest_endpoint_end_to_end(env):
     assert "Marcus Lee" in ans["answer"] and ans["citations"][0]["doc"] == "crm-customer-c-200.md"
     assert env.client.post("/v1/connectors/crm/customers/zzz/ingest", headers=t["headers"]).status_code == 404
     json.dumps(ans)
+
+
+def test_outbound_retry_reuses_idempotency_key():
+    client, seen = _client([500, 502, 200])
+    res = send_webhook(
+        "http://x.test/h", "s", {"a": 1}, client=client, sleep=lambda s: None, idempotency_key="evt-7"
+    )
+    assert res.ok and res.attempts == 3
+    assert {r.headers["idempotency-key"] for r in seen} == {"evt-7"}
+
+
+def test_tool_sends_stable_event_id_per_delivery(env, db_session):
+    from aip.agent.tools import REGISTRY, ToolContext
+    from aip.providers.fake import FakeProvider
+    from aip.tenants import create_tenant
+
+    tenant, _ = create_tenant(db_session, "hook", ["call_customer_webhook"], "http://hooks.test/in")
+    ctx = ToolContext(
+        db=db_session, tenant=tenant, embedder=FakeProvider(), http=env.http, settings=env.settings
+    )
+    tool = REGISTRY["call_customer_webhook"]
+    env.http_handler = lambda req: httpx.Response(200)
+    tool.run(ctx, tool.args_model(event="a.b"))
+    tool.run(ctx, tool.args_model(event="a.c"))
+    keys = [r.headers["idempotency-key"] for r in env.requests]
+    assert keys == [f"{ctx.run_key}:1", f"{ctx.run_key}:2"]

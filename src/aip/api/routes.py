@@ -259,6 +259,7 @@ def agent_run(
 @router.post("/v1/tickets", status_code=201, tags=["tickets"])
 def post_ticket(
     body: TicketIn,
+    request: Request,
     tenant: Tenant = Depends(current_tenant),
     db: Session = Depends(get_db),
     idempotency_key: str | None = Header(default=None, max_length=200),
@@ -269,7 +270,9 @@ def post_ticket(
         return _ticket_json(t)
 
     if idempotency_key:
-        data, replayed = run_once(db, tenant.id, idempotency_key, make)
+        data, replayed = run_once(
+            db, tenant.id, idempotency_key, make, ttl_hours=request.app.state.settings.idempotency_ttl_hours
+        )
         return _json(data, 200 if replayed else 201, replayed)
     data = make()
     db.commit()
@@ -415,7 +418,9 @@ async def inbound_webhook(
             },
         }
 
-    data, replayed = run_once(db, tenant.id, idempotency_key, handle)
+    data, replayed = run_once(
+        db, tenant.id, idempotency_key, handle, ttl_hours=request.app.state.settings.idempotency_ttl_hours
+    )
     return _json(data, 200, replayed)
 
 

@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     approval_limit_minor: int = 10000
     authority_path: str = "docs/engagement/AUTHORITY.md"
     action_port: Literal["mcp", "inprocess"] = "inprocess"
+    idempotency_ttl_hours: int = 72
     case_max_steps: int = 6
     case_max_tokens: int = 4000
 
