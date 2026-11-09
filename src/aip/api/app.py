@@ -27,6 +27,7 @@ from aip.observability import (
 )
 from aip.providers import build_chat_provider, build_embedder
 from aip.providers.base import ChatProvider, Embedder
+from aip.providers.pricing import load_prices
 from aip.security import RateLimiter
 
 log = logging.getLogger("aip.http")
@@ -64,6 +65,7 @@ def create_app(
         max_steps=settings.case_max_steps,
         max_tokens=settings.case_max_tokens,
         authority=_authority,
+        prices=load_prices(settings.llm_price_per_mtok_json),
         action_port=build_action_port(
             settings.action_port, str(settings.database_url), _authority.hard_cap_minor
         ),

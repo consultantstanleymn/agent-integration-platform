@@ -27,6 +27,7 @@ from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Ticket
 from aip.models import Case, Tenant
 from aip.providers.base import ChatProvider, Embedder
+from aip.providers.pricing import PriceTable
 from aip.rag.service import retrieve
 from aip.rag.store import Hit
 from aip.redaction import Redactor, default_redactor
@@ -68,7 +69,10 @@ def upsert_case(db: Session, state: CaseState, redactor: Redactor | None = None)
         db.add(row)
     row.status = state.status
     row.category = state.category
-    row.proposal = clean.redact(state.proposal.model_dump()) if state.proposal else None
+    proposal_json = state.proposal.model_dump() if state.proposal else {}
+    if state.usage:
+        proposal_json = {**proposal_json, "usage": state.usage}
+    row.proposal = clean.redact(proposal_json) if proposal_json else None
     row.decision = clean.redact(state.decision.model_dump()) if state.decision else None
     row.steps_used = state.steps_used
     row.tokens_used = state.tokens_used
@@ -113,6 +117,7 @@ class CaseService:
         authority: Authority | None = None,
         redactor: Redactor | None = None,
         action_port: ActionPort | None = None,
+        prices: PriceTable | None = None,
     ) -> None:
         self.checkpoint_url = checkpoint_url
         self.provider = provider
@@ -123,6 +128,7 @@ class CaseService:
         self.authority = authority
         self.redactor = redactor or default_redactor()
         self.action_port = action_port
+        self.prices = prices or {}
         self._handle: CheckpointerHandle | None = None
 
     def _checkpointer(self) -> BaseCheckpointSaver:
@@ -161,6 +167,7 @@ class CaseService:
             max_steps=self.max_steps,
             max_tokens=self.max_tokens,
             authority=self.authority,
+            prices=self.prices,
         )
 
     def _act(self, db: Session, state: CaseState) -> dict[str, Any]:

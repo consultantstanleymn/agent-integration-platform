@@ -80,6 +80,14 @@ aip eval run --suite cases --replay --min-pass-rate 0.95
 
 Cassettes are synthetic. No hosted model response was recorded.
 
+## Authored, not run
+
+| File or step | What it would do | Why it did not run |
+|---|---|---|
+| Real hosted model call (Anthropic Messages API adapter, OpenAI-compatible adapter) | Answer chat requests with a hosted model | Authored, not run: this adapter is tested with mocked HTTP only. It was not executed against a hosted model API. Reason: no hosted account or spend cap by design |
+
+This table grows as the work proceeds.
+
 ## Choose a real model
 
 ```bash

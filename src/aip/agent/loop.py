@@ -11,7 +11,8 @@ from aip.agent.tools import REGISTRY, ToolContext
 from aip.audit import audit
 from aip.models import AgentRun
 from aip.observability import AGENT_RUNS, LLM_CALLS, TOOL_CALLS, redact, span, tenant_id_var, trace_id_var
-from aip.providers.base import ChatProvider, Message, ProviderError
+from aip.providers.base import ChatProvider, Message, ProviderError, Usage
+from aip.providers.pricing import estimate_cost_usd, load_prices
 
 log = logging.getLogger("aip.agent")
 CITATION_RE = re.compile(r"\[([^\[\]#]+#\d+)\]")
@@ -83,6 +84,7 @@ def run_agent(
     steps: list[dict[str, Any]] = []
     status, answer = "max_steps", "I could not finish within the step limit."
     citations: list[Citation] = []
+    total_in = total_out = 0
 
     with span("agent.run", tenant_id=tenant_id):
         for step in range(max_steps):
@@ -90,6 +92,8 @@ def run_agent(
             try:
                 with span("llm.chat", step=step):
                     resp = provider.chat(messages, specs)
+                total_in += resp.usage.input_tokens
+                total_out += resp.usage.output_tokens
             except ProviderError as exc:
                 log.warning("provider error", extra={"fields": {"error": str(exc)}})
                 status, answer = (
@@ -121,6 +125,11 @@ def run_agent(
                 )
 
     AGENT_RUNS.labels(status=status).inc()
+    usage = Usage(input_tokens=total_in, output_tokens=total_out)
+    cost = estimate_cost_usd(
+        getattr(provider, "model", None), usage, load_prices(ctx.settings.llm_price_per_mtok_json)
+    )
+    steps.append({"llm": provider.name, "usage": usage.model_dump(), "cost_usd": cost, "outcome": "usage"})
     run = AgentRun(
         tenant_id=tenant_id,
         question=redact(q),

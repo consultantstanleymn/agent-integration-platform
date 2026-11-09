@@ -6,7 +6,7 @@ partial update. The graph merges the update into the state.
 
 import json
 from collections.abc import Callable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from pydantic import ValidationError
@@ -14,6 +14,7 @@ from pydantic import ValidationError
 from aip.graph.authority import Authority, evaluate, fallback_authority
 from aip.graph.state import CaseState, Proposal
 from aip.providers.base import ChatProvider, LLMResponse, Message
+from aip.providers.pricing import PriceTable, estimate_cost_usd
 from aip.rag.store import Hit
 
 CLASSIFY_PROMPT = """CLASSIFY the support ticket into exactly one category.
@@ -40,6 +41,7 @@ class NodeDeps:
     max_steps: int = 6
     max_tokens: int = 4000
     authority: Authority | None = None
+    prices: PriceTable = field(default_factory=dict)
 
 
 def _json_object(text: str) -> dict[str, Any]:
@@ -63,12 +65,20 @@ def over_budget(state: CaseState, deps: NodeDeps) -> bool:
     return state.steps_used >= deps.max_steps or state.tokens_used >= deps.max_tokens
 
 
-def charge(state: CaseState, response: LLMResponse) -> dict[str, Any]:
-    """Return the step and token counters after one LLM call."""
+def charge(state: CaseState, response: LLMResponse, deps: NodeDeps | None = None) -> dict[str, Any]:
+    """Return the step, token and usage counters after one LLM call."""
     usage = response.usage
+    totals = dict(state.usage)
+    totals["input_tokens"] = int(totals.get("input_tokens", 0)) + usage.input_tokens
+    totals["output_tokens"] = int(totals.get("output_tokens", 0)) + usage.output_tokens
+    if deps is not None:
+        cost = estimate_cost_usd(getattr(deps.provider, "model", None), usage, deps.prices)
+        if cost is not None:
+            totals["cost_usd"] = round(float(totals.get("cost_usd") or 0.0) + cost, 8)
     return {
         "steps_used": state.steps_used + 1,
         "tokens_used": state.tokens_used + usage.input_tokens + usage.output_tokens,
+        "usage": totals,
     }
 
 
@@ -80,7 +90,7 @@ def classify(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
         Message(role="user", content=f"{state.ticket.subject}\n\n{state.ticket.body}"),
     ]
     response = deps.provider.chat(messages, [])
-    charged = charge(state, response)
+    charged = charge(state, response, deps)
     try:
         category = _json_object(response.content).get("category")
     except (ValueError, json.JSONDecodeError):
@@ -112,7 +122,7 @@ def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
         ),
     ]
     response = deps.provider.chat(messages, [])
-    charged = charge(state, response)
+    charged = charge(state, response, deps)
     try:
         data = _json_object(response.content)
         proposal = Proposal.model_validate(data)

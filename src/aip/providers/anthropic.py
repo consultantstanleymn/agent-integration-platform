@@ -4,7 +4,7 @@ from typing import Any
 
 import httpx
 
-from aip.providers.base import LLMResponse, Message, ProviderError, ToolCall, ToolSpec
+from aip.providers.base import LLMResponse, Message, ProviderError, ToolCall, ToolSpec, Usage
 
 API_URL = "https://api.anthropic.com/v1/messages"
 
@@ -71,7 +71,11 @@ class AnthropicProvider:
                 for b in data["content"]
                 if b["type"] == "tool_use"
             ]
-            return LLMResponse(content=text, tool_calls=calls)
+            raw = data.get("usage") or {}
+            usage = Usage(
+                input_tokens=int(raw.get("input_tokens", 0)), output_tokens=int(raw.get("output_tokens", 0))
+            )
+            return LLMResponse(content=text, tool_calls=calls, usage=usage)
         except httpx.TimeoutException as exc:
             raise ProviderError("timeout") from exc
         except (httpx.HTTPError, KeyError, TypeError, ValueError) as exc:

@@ -50,3 +50,4 @@ class CaseState(BaseModel):
     steps_used: int = 0
     tokens_used: int = 0
     action_result: dict[str, Any] | None = None
+    usage: dict[str, Any] = Field(default_factory=dict)  # input_tokens, output_tokens, cost_usd

@@ -5,7 +5,7 @@ from typing import Any
 
 import httpx
 
-from aip.providers.base import LLMResponse, Message, ProviderError, ToolCall, ToolSpec
+from aip.providers.base import LLMResponse, Message, ProviderError, ToolCall, ToolSpec, Usage
 
 
 def to_wire_messages(messages: list[Message]) -> list[dict[str, Any]]:
@@ -88,7 +88,12 @@ class OpenAICompatProvider:
                 )
                 for c in (msg.get("tool_calls") or [])
             ]
-            return LLMResponse(content=msg.get("content") or "", tool_calls=calls)
+            raw = data.get("usage") or {}
+            usage = Usage(
+                input_tokens=int(raw.get("prompt_tokens", 0)),
+                output_tokens=int(raw.get("completion_tokens", 0)),
+            )
+            return LLMResponse(content=msg.get("content") or "", tool_calls=calls, usage=usage)
         except (KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
             raise ProviderError("openai_compat: unexpected response shape") from exc
 

@@ -14,6 +14,7 @@ from aip.graph.service import CaseService
 from aip.graph.state import Ticket
 from aip.models import Tenant
 from aip.providers import build_chat_provider, build_embedder
+from aip.providers.pricing import load_prices
 from aip.tenants import ALL_TOOLS, create_tenant
 
 
@@ -97,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
             max_steps=s.case_max_steps,
             max_tokens=s.case_max_tokens,
             authority=_authority,
+            prices=load_prices(s.llm_price_per_mtok_json),
             action_port=build_action_port(s.action_port, str(s.database_url), _authority.hard_cap_minor),
         )
         if args.cmd == "cases":
