@@ -11,6 +11,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from aip.graph.authority import Authority, evaluate, fallback_authority
 from aip.graph.state import CaseState, Proposal
 from aip.providers.base import ChatProvider, LLMResponse, Message
 from aip.rag.store import Hit
@@ -38,6 +39,7 @@ class NodeDeps:
     record: Callable[[CaseState], None]
     max_steps: int = 6
     max_tokens: int = 4000
+    authority: Authority | None = None
 
 
 def _json_object(text: str) -> dict[str, Any]:
@@ -124,9 +126,13 @@ def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
 
 
 def check_authority(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
+    authority = deps.authority or fallback_authority(deps.approval_limit_minor)
+    allowed, reason = evaluate(authority, state.ticket, state.proposal)
+    if not allowed:
+        return {"status": "refused", "refusal_reason": reason, "needs_approval": False}
     if state.proposal is None:
         return {"needs_approval": False}
-    return {"needs_approval": state.proposal.amount_minor > deps.approval_limit_minor}
+    return {"needs_approval": state.proposal.amount_minor > authority.approval_limit_minor}
 
 
 def act(state: CaseState, deps: NodeDeps) -> dict[str, Any]:

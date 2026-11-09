@@ -7,6 +7,7 @@ from pathlib import Path
 
 from aip.config import Settings
 from aip.db import make_engine, make_session_factory
+from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.graph.state import Ticket
 from aip.models import Tenant
@@ -67,6 +68,7 @@ def main(argv: list[str] | None = None) -> int:
             approval_limit_minor=s.approval_limit_minor,
             max_steps=s.case_max_steps,
             max_tokens=s.case_max_tokens,
+            authority=load_authority(s.authority_path),
         )
         try:
             with factory() as db:

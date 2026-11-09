@@ -18,6 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from aip.audit import audit
+from aip.graph.authority import Authority
 from aip.graph.build import build_graph, postgres_checkpointer, run_case
 from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Ticket
@@ -98,6 +99,7 @@ class CaseService:
         approval_limit_minor: int,
         max_steps: int = 6,
         max_tokens: int = 4000,
+        authority: Authority | None = None,
     ) -> None:
         self.checkpoint_url = checkpoint_url
         self.provider = provider
@@ -105,6 +107,7 @@ class CaseService:
         self.approval_limit_minor = approval_limit_minor
         self.max_steps = max_steps
         self.max_tokens = max_tokens
+        self.authority = authority
         self._handle: CheckpointerHandle | None = None
 
     def _checkpointer(self) -> BaseCheckpointSaver:
@@ -123,7 +126,14 @@ class CaseService:
 
         def record_state(state: CaseState) -> None:
             upsert_case(db, state)
-            audit(db, state.tenant_id, "case.recorded", thread_id=state.thread_id, status=state.status)
+            audit(
+                db,
+                state.tenant_id,
+                "case.recorded",
+                thread_id=state.thread_id,
+                status=state.status,
+                refusal_reason=state.refusal_reason,
+            )
             db.commit()
 
         return NodeDeps(
@@ -134,6 +144,7 @@ class CaseService:
             record=record_state,
             max_steps=self.max_steps,
             max_tokens=self.max_tokens,
+            authority=self.authority,
         )
 
     def start(

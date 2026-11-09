@@ -74,7 +74,7 @@ def test_propose_invalid_json_refuses() -> None:
 
 def test_check_authority_sets_needs_approval_over_limit() -> None:
     state = _state(
-        proposal=Proposal(action="refund", amount_minor=5000, reason="full refund"),
+        proposal=Proposal(action="refund", amount_minor=5000, order_id="ORD-1", reason="full refund"),
     )
 
     update = check_authority(state, _deps(StubProvider(), limit=1000))

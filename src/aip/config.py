@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     rate_limit_per_minute: int = 60
     checkpoint_url: str = "sqlite:///./aip-checkpoints.sqlite"
     approval_limit_minor: int = 10000
+    authority_path: str = "docs/engagement/AUTHORITY.md"
     case_max_steps: int = 6
     case_max_tokens: int = 4000
 

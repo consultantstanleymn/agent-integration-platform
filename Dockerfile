@@ -17,6 +17,7 @@ COPY alembic.ini ./
 COPY migrations ./migrations
 COPY prompts ./prompts
 COPY evals ./evals
+COPY docs/engagement/AUTHORITY.md ./docs/engagement/AUTHORITY.md
 COPY mock_crm ./mock_crm
 COPY docker-entrypoint.sh ./
 USER app

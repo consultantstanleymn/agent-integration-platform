@@ -12,6 +12,7 @@ from sqlalchemy import Engine
 from aip.api.routes import router
 from aip.config import Settings
 from aip.db import make_engine, make_session_factory
+from aip.graph.authority import load_authority
 from aip.graph.service import CaseService
 from aip.observability import (
     HTTP_LATENCY,
@@ -59,6 +60,7 @@ def create_app(
         approval_limit_minor=settings.approval_limit_minor,
         max_steps=settings.case_max_steps,
         max_tokens=settings.case_max_tokens,
+        authority=load_authority(settings.authority_path),
     )
 
     @app.middleware("http")
