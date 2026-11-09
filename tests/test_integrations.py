@@ -279,3 +279,28 @@ def test_tool_sends_stable_event_id_per_delivery(env, db_session):
     tool.run(ctx, tool.args_model(event="a.c"))
     keys = [r.headers["idempotency-key"] for r in env.requests]
     assert keys == [f"{ctx.run_key}:1", f"{ctx.run_key}:2"]
+
+
+def test_hostname_resolving_to_private_ip_is_blocked():
+    import pytest
+
+    from aip.integrations.webhooks import UnsafeTargetError, validate_target_url
+
+    for ip in ("10.0.0.5", "127.0.0.1", "169.254.169.254", "192.168.1.9", "::1"):
+        with pytest.raises(UnsafeTargetError):
+            validate_target_url("https://hooks.example.test/x", resolver=lambda h, ip=ip: [ip])
+
+
+def test_hostname_resolving_to_public_ip_is_allowed():
+    from aip.integrations.webhooks import validate_target_url
+
+    validate_target_url("https://hooks.example.test/x", resolver=lambda h: ["93.184.216.34"])
+
+
+def test_mixed_answers_are_blocked():
+    import pytest
+
+    from aip.integrations.webhooks import UnsafeTargetError, validate_target_url
+
+    with pytest.raises(UnsafeTargetError):
+        validate_target_url("https://hooks.example.test/x", resolver=lambda h: ["93.184.216.34", "10.1.2.3"])

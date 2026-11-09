@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import ipaddress
 import json
+import socket
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -38,8 +39,37 @@ class UnsafeTargetError(ValueError):
     pass
 
 
-def validate_target_url(url: str, allow_private: bool = False) -> None:
-    """Basic SSRF guard for customer-supplied URLs. Literal IPs and 'localhost' only (see SECURITY.md)."""
+def resolve_host(host: str) -> list[str]:
+    """Return every address the name resolves to."""
+    try:
+        infos = socket.getaddrinfo(host, None, proto=socket.IPPROTO_TCP)
+    except socket.gaierror as exc:
+        raise UnsafeTargetError("webhook host does not resolve") from exc
+    return sorted({str(info[4][0]) for info in infos})
+
+
+def _is_blocked(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    return (
+        ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_multicast
+        or ip.is_reserved
+        or ip.is_unspecified
+    )
+
+
+def validate_target_url(
+    url: str,
+    allow_private: bool = False,
+    resolver: Callable[[str], list[str]] = resolve_host,
+) -> None:
+    """SSRF guard for customer-supplied URLs.
+
+    Literal IPs and 'localhost' are checked directly. A DNS name is resolved, and the URL is
+    blocked when any answer is loopback, private, link-local, multicast or reserved. The HTTP
+    client may resolve again at connect time. A pinned-address transport is not built (see SECURITY.md).
+    """
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.hostname:
         raise UnsafeTargetError("webhook URL must be http(s)")
@@ -49,10 +79,12 @@ def validate_target_url(url: str, allow_private: bool = False) -> None:
     if host == "localhost" or host.endswith(".internal"):
         raise UnsafeTargetError("private webhook target blocked")
     try:
-        ip = ipaddress.ip_address(host)
+        addresses = [ipaddress.ip_address(host)]
     except ValueError:
-        return  # a DNS name; DNS rebinding is not handled here
-    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+        addresses = [ipaddress.ip_address(a) for a in resolver(host)]
+        if not addresses:
+            raise UnsafeTargetError("webhook host does not resolve") from None
+    if any(_is_blocked(ip) for ip in addresses):
         raise UnsafeTargetError("private webhook target blocked")
 
 

@@ -11,7 +11,7 @@ or penetration test. This file lists what exists and what does not.
 | API keys | Leak from the database | Only a SHA-256 hash is stored. The key is shown once at creation |
 | LLM provider keys | Leak in logs or DB | Env vars only, `SecretStr` in settings, never logged or stored |
 | Inbound webhook endpoint | Forged or replayed events | HMAC-SHA256 over `timestamp.body`, 5 minute window, constant-time compare, idempotency keys |
-| Outbound webhooks | SSRF (calling internal services) | URL validation blocks non-http(s), localhost and private literal IPs |
+| Outbound webhooks | SSRF (calling internal services) | URL validation blocks non-http(s), localhost, private IPs and names that resolve to them |
 | Agent | Prompt injection makes it misuse tools | Per-tenant tool allow-list, max steps, validated arguments, answers may cite only retrieved chunks |
 | Logs | PII in logs | Redaction of emails, phones, SSNs, card numbers, keys, bearer tokens |
 | Service | Abuse, traffic spikes | Per-tenant rate limit (in memory) |
@@ -40,7 +40,7 @@ or penetration test. This file lists what exists and what does not.
 ## Known gaps
 
 - **Webhook secrets in plain text** in the `tenants` table. A database leak exposes them.
-- **SSRF guard is partial.** DNS names that resolve to private addresses (DNS rebinding) are not blocked.
+- **SSRF guard resolves names once.** A name that resolves to a private address is blocked. The HTTP client may resolve again at connect time, so DNS rebinding between the check and the call is still possible. A pinned-address transport is not built.
 - **Rate limit** is per process and in memory. Several replicas multiply the limit.
 - **Prompt injection** cannot be fully prevented. The controls limit the damage; they do not remove the risk.
 - **PII redaction** uses regular expressions. It misses names and addresses. Question text and answers are stored
