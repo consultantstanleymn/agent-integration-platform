@@ -1,0 +1,32 @@
+# Evidence: LocalStack compose profile, config check only
+label: AUTHORED, NOT RUN
+date: 2026-11-09 08:14 UTC
+code commit: d5733b55efba38c72651893faca99efe1e698152
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: podman compose -f docker-compose.yml --profile localstack config (see file)
+notes: Authored, not run: this file is written and syntax-checked with podman compose 5.8.7 and yamllint 1.38.0. It was not executed against LocalStack. Reason: no local run by owner decision (the image is not pulled). The docker compose plugin is not installed, so docker compose config did not run.
+---
+## podman compose, profile localstack
+>>>> Executing external compose provider "/usr/bin/podman-compose". Please see podman-compose(1) for how to disable this message. <<<<
+
+exit code: 0
+## services shown with the profile (count of lines naming localstack)
+3
+## services shown without the profile
+0
+## docker compose
+unknown shorthand flag: 'f' in -f
+
+Usage:  docker [OPTIONS] COMMAND [ARG...]
+
+Run 'docker --help' for more information
+exit code: 125 (the docker compose plugin is not installed on this laptop)
+## yamllint
+docker-compose.yml
+  1:81      warning  line too long (93 > 80 characters)  (line-length)
+  19:81     warning  line too long (83 > 80 characters)  (line-length)
+  45:81     warning  line too long (94 > 80 characters)  (line-length)
+  49:81     warning  line too long (84 > 80 characters)  (line-length)
+
+exit code: 0
