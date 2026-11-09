@@ -1,5 +1,5 @@
 import json
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Request, Response, UploadFile
 from pydantic import BaseModel, Field, ValidationError
@@ -12,6 +12,8 @@ from aip.agent.tools import ToolContext
 from aip.api.deps import current_tenant, get_db, get_settings, require_admin
 from aip.audit import audit
 from aip.config import Settings
+from aip.graph.service import CaseService, case_json
+from aip.graph.state import Ticket as CaseTicket
 from aip.integrations.crm import CrmClient, customer_to_text
 from aip.integrations.idempotency import run_once
 from aip.integrations.oauth import ClientCredentialsTokenProvider
@@ -58,6 +60,12 @@ class AgentIn(BaseModel):
 class TicketIn(BaseModel):
     subject: str = Field(min_length=1, max_length=300)
     body: str = Field(default="", max_length=5000)
+
+
+class CaseIn(BaseModel):
+    subject: str = Field(min_length=1, max_length=300)
+    body: str = Field(default="", max_length=5000)
+    order_id: str | None = Field(default=None, max_length=100)
 
 
 class InboundEvent(BaseModel):
@@ -284,6 +292,40 @@ def list_tickets(
 ) -> list[dict[str, Any]]:
     rows = db.scalars(select(Ticket).where(Ticket.tenant_id == tenant.id).order_by(Ticket.id)).all()
     return [_ticket_json(t) for t in rows]
+
+
+# ---- cases ------------------------------------------------------------------
+@router.post("/v1/cases", status_code=201, tags=["cases"])
+def post_case(
+    body: CaseIn,
+    request: Request,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    service: CaseService = request.app.state.case_service
+    role = cast(Literal["agent", "team_lead"], getattr(request.state, "role", "agent"))
+    ticket = CaseTicket(subject=body.subject, body=body.body, order_id=body.order_id)
+    state = service.start(db, tenant, role, ticket)
+    return {
+        "thread_id": state.thread_id,
+        "status": state.status,
+        "proposal": state.proposal.model_dump() if state.proposal else None,
+        "needs_approval": state.needs_approval,
+    }
+
+
+@router.get("/v1/cases/{thread_id}", tags=["cases"])
+def read_case(
+    thread_id: str,
+    request: Request,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    service: CaseService = request.app.state.case_service
+    row = service.get(db, tenant, thread_id)
+    if row is None:
+        raise HTTPException(404, "case not found")
+    return case_json(row)
 
 
 def _json(data: dict[str, Any], status: int, replayed: bool) -> Response:

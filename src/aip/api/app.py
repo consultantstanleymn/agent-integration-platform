@@ -12,6 +12,7 @@ from sqlalchemy import Engine
 from aip.api.routes import router
 from aip.config import Settings
 from aip.db import make_engine, make_session_factory
+from aip.graph.service import CaseService
 from aip.observability import (
     HTTP_LATENCY,
     HTTP_REQUESTS,
@@ -51,6 +52,12 @@ def create_app(
     app.state.embedder = embedder or build_embedder(settings)
     app.state.http = http or httpx.Client(timeout=10)
     app.state.rate_limiter = RateLimiter(settings.rate_limit_per_minute)
+    app.state.case_service = CaseService(
+        checkpoint_url=settings.checkpoint_url,
+        provider=app.state.chat,
+        embedder=app.state.embedder,
+        approval_limit_minor=settings.approval_limit_minor,
+    )
 
     @app.middleware("http")
     async def observe(request: Request, call_next):  # type: ignore[no-untyped-def]

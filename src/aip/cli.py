@@ -7,6 +7,10 @@ from pathlib import Path
 
 from aip.config import Settings
 from aip.db import make_engine, make_session_factory
+from aip.graph.service import CaseService
+from aip.graph.state import Ticket
+from aip.models import Tenant
+from aip.providers import build_chat_provider, build_embedder
 from aip.tenants import ALL_TOOLS, create_tenant
 
 
@@ -18,6 +22,14 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("name")
     t.add_argument("--tools", default="search_knowledge_base,lookup_ticket")
     t.add_argument("--webhook-url")
+
+    c = sub.add_parser("case", help="start a case for a tenant")
+    csub = c.add_subparsers(dest="case_cmd", required=True)
+    cs = csub.add_parser("start")
+    cs.add_argument("--tenant-id", type=int, required=True)
+    cs.add_argument("--subject", required=True)
+    cs.add_argument("--body", default="")
+    cs.add_argument("--order-id", default=None)
 
     e = sub.add_parser("eval", help="run or report evals")
     esub = e.add_subparsers(dest="eval_cmd", required=True)
@@ -42,6 +54,39 @@ def main(argv: list[str] | None = None) -> int:
             tenant, key = create_tenant(db, args.name, tools, args.webhook_url)
             db.commit()
             print(json.dumps({"id": tenant.id, "api_key": key, "webhook_secret": tenant.webhook_secret}))
+        return 0
+
+    if args.cmd == "case":
+        s = Settings()
+        engine = make_engine(s.database_url)
+        factory = make_session_factory(engine)
+        service = CaseService(
+            checkpoint_url=s.checkpoint_url,
+            provider=build_chat_provider(s),
+            embedder=build_embedder(s),
+            approval_limit_minor=s.approval_limit_minor,
+        )
+        try:
+            with factory() as db:
+                case_tenant = db.get(Tenant, args.tenant_id)
+                if not case_tenant:
+                    print("tenant not found", file=sys.stderr)
+                    return 2
+                ticket = Ticket(subject=args.subject, body=args.body, order_id=args.order_id)
+                state = service.start(db, case_tenant, "agent", ticket)
+                print(
+                    json.dumps(
+                        {
+                            "thread_id": state.thread_id,
+                            "status": state.status,
+                            "proposal": state.proposal.model_dump() if state.proposal else None,
+                            "needs_approval": state.needs_approval,
+                        }
+                    )
+                )
+        finally:
+            service.close()
+            engine.dispose()
         return 0
 
     from aip.evals.runner import format_report, run_evals
