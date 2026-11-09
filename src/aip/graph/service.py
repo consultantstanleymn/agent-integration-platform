@@ -22,7 +22,7 @@ from aip.audit import audit
 from aip.db import make_session_factory
 from aip.graph.actions import ActionPort, InProcessActionPort
 from aip.graph.authority import Authority
-from aip.graph.build import build_graph, postgres_checkpointer, resume_case, run_case
+from aip.graph.build import build_graph, case_serde, postgres_checkpointer, resume_case, run_case
 from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Ticket
 from aip.models import Case, Tenant
@@ -56,7 +56,7 @@ def open_checkpointer(url: str) -> CheckpointerHandle:
         saver = stack.enter_context(postgres_checkpointer(url))
         return CheckpointerHandle(saver=saver, close=stack.close)
     connection = sqlite3.connect(sqlite_path(url), check_same_thread=False)
-    return CheckpointerHandle(saver=SqliteSaver(connection), close=connection.close)
+    return CheckpointerHandle(saver=SqliteSaver(connection, serde=case_serde()), close=connection.close)
 
 
 def upsert_case(db: Session, state: CaseState, redactor: Redactor | None = None) -> Case:

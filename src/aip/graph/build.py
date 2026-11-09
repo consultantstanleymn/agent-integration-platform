@@ -13,6 +13,7 @@ from typing import Any
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.postgres import PostgresSaver
+from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.config import RunnableConfig
 from langgraph.graph import END, START, StateGraph
@@ -106,15 +107,28 @@ def build_graph(
     return builder.compile(checkpointer=checkpointer)
 
 
+def case_serde() -> JsonPlusSerializer:
+    """Serializer that names the state classes the checkpointer may restore."""
+    return JsonPlusSerializer(
+        allowed_msgpack_modules=[
+            ("aip.graph.state", "Proposal"),
+            ("aip.graph.state", "Decision"),
+            ("aip.graph.state", "Ticket"),
+            ("aip.graph.state", "CaseState"),
+        ]
+    )
+
+
 def sqlite_checkpointer(path: str) -> SqliteSaver:
     connection = sqlite3.connect(path, check_same_thread=False)
-    return SqliteSaver(connection)
+    return SqliteSaver(connection, serde=case_serde())
 
 
 @contextmanager
 def postgres_checkpointer(url: str) -> Iterator[PostgresSaver]:
     conn_string = url.replace("postgresql+psycopg://", "postgresql://", 1)
     with PostgresSaver.from_conn_string(conn_string) as saver:
+        saver.serde = case_serde()
         saver.setup()
         yield saver
 
