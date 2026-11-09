@@ -14,12 +14,13 @@ def build_chat_provider(s: Settings) -> ChatProvider:
             s.openai_api_key.get_secret_value(),
             s.openai_model,
             s.openai_embed_model,
+            timeout_s=s.llm_timeout_seconds,
         )
     if s.llm_provider == "anthropic":
         key = s.anthropic_api_key.get_secret_value()
         if not key:
             raise ProviderError("ANTHROPIC_API_KEY is not set")
-        return AnthropicProvider(key, s.anthropic_model)
+        return AnthropicProvider(key, s.anthropic_model, timeout_s=s.llm_timeout_seconds)
     raise ProviderError(f"unknown LLM_PROVIDER: {s.llm_provider}")
 
 

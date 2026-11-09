@@ -39,12 +39,17 @@ class AnthropicProvider:
     name = "anthropic"
 
     def __init__(
-        self, api_key: str, model: str, client: httpx.Client | None = None, url: str = API_URL
+        self,
+        api_key: str,
+        model: str,
+        client: httpx.Client | None = None,
+        url: str = API_URL,
+        timeout_s: float = 20,
     ) -> None:
         self.model = model
         self.url = url
         self._key = api_key
-        self._client = client or httpx.Client(timeout=60)
+        self._client = client or httpx.Client(timeout=httpx.Timeout(timeout_s, connect=5))
 
     def chat(self, messages: list[Message], tools: list[ToolSpec]) -> LLMResponse:
         system, wire = to_wire(messages)
@@ -67,5 +72,7 @@ class AnthropicProvider:
                 if b["type"] == "tool_use"
             ]
             return LLMResponse(content=text, tool_calls=calls)
+        except httpx.TimeoutException as exc:
+            raise ProviderError("timeout") from exc
         except (httpx.HTTPError, KeyError, TypeError, ValueError) as exc:
             raise ProviderError(f"anthropic request failed: {type(exc).__name__}") from exc

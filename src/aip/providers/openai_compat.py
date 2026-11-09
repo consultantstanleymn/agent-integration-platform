@@ -43,12 +43,13 @@ class OpenAICompatProvider:
         model: str,
         embed_model: str,
         client: httpx.Client | None = None,
+        timeout_s: float = 20,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.embed_model = embed_model
         self._key = api_key  # held in memory only, never logged or stored
-        self._client = client or httpx.Client(timeout=60)
+        self._client = client or httpx.Client(timeout=httpx.Timeout(timeout_s, connect=5))
 
     def _post(self, path: str, body: dict[str, Any]) -> dict[str, Any]:
         headers = {"Authorization": f"Bearer {self._key}"} if self._key else {}
@@ -57,6 +58,8 @@ class OpenAICompatProvider:
             r.raise_for_status()
             data: dict[str, Any] = r.json()
             return data
+        except httpx.TimeoutException as exc:
+            raise ProviderError("timeout") from exc
         except (httpx.HTTPError, ValueError) as exc:
             raise ProviderError(f"openai_compat request failed: {type(exc).__name__}") from exc
 
