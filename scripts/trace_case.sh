@@ -46,12 +46,16 @@ TID=$(echo "$TENANT" | jq -r .id)
 LEAD=$(curl -sf -X POST "$API/admin/tenants/$TID/keys" -H "X-Admin-Token: $ADMIN_TOKEN" -H 'Content-Type: application/json' -d '{"role":"team_lead","label":"Lead"}' | jq -r .api_key)
 curl -sf -X POST "$API/v1/documents" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' \
   -d '{"name":"returns.md","text":"# Returns\n\nReturns are accepted within 60 days with an order number."}' >/dev/null
+# Both requests carry the same trace id, so the case run and the approval land in one trace.
+TRACE=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+PARENT="traceparent: 00-$TRACE-00f067aa0ba902b7-01"
 # shellcheck disable=SC2016  # the dollar sign in the ticket text is literal
-THREAD=$(curl -sf -X POST "$API/v1/cases" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' \
+THREAD=$(curl -sf -X POST "$API/v1/cases" -H "$PARENT" -H "X-API-Key: $KEY" -H 'Content-Type: application/json' \
   -d '{"subject":"Return","body":"Please refund $150.00 for order ORD-5001."}' | jq -r .thread_id)
-curl -sf -X POST "$API/v1/cases/$THREAD/decision" -H "X-API-Key: $LEAD" -H 'Content-Type: application/json' \
+curl -sf -X POST "$API/v1/cases/$THREAD/decision" -H "$PARENT" -H "X-API-Key: $LEAD" -H 'Content-Type: application/json' \
   -d '{"decision":"approve","reason":"checked"}' >/dev/null
 sleep 6
 mkdir -p "$(dirname "$OUT")"
-curl -sf "http://127.0.0.1:25186/api/traces?service=agent-integration-platform&limit=5" -o "$OUT"
-echo "spans in the first trace: $(jq '.data[0].spans | length' "$OUT")"
+curl -sf "http://127.0.0.1:25186/api/traces/$TRACE" -o "$OUT"
+echo "trace id: $TRACE"
+echo "spans in the trace: $(jq '.data[0].spans | length' "$OUT")"
