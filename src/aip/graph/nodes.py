@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from aip.graph.authority import Authority, evaluate, fallback_authority
 from aip.graph.state import CaseState, Proposal
+from aip.observability import llm_span, record_usage
 from aip.providers.base import ChatProvider, LLMResponse, Message
 from aip.providers.pricing import PriceTable, estimate_cost_usd
 from aip.rag.store import Hit
@@ -83,6 +84,14 @@ def charge(state: CaseState, response: LLMResponse, deps: NodeDeps | None = None
     }
 
 
+def _chat(deps: NodeDeps, messages: list[Message]) -> LLMResponse:
+    """One chat call inside a GenAI span."""
+    with llm_span(getattr(deps.provider, "name", "unknown"), getattr(deps.provider, "model", None)) as sp:
+        response = deps.provider.chat(messages, [])
+        record_usage(sp, response.usage.input_tokens, response.usage.output_tokens)
+    return response
+
+
 def classify(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
     if over_budget(state, deps):
         return {"status": "budget_exceeded"}
@@ -90,7 +99,7 @@ def classify(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
         Message(role="system", content=CLASSIFY_PROMPT),
         Message(role="user", content=f"{state.ticket.subject}\n\n{state.ticket.body}"),
     ]
-    response = deps.provider.chat(messages, [])
+    response = _chat(deps, messages)
     charged = charge(state, response, deps)
     try:
         category = _json_object(response.content).get("category")
@@ -125,7 +134,7 @@ def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
             content=(f"Ticket: {state.ticket.subject}\n{state.ticket.body}\n\nPolicy:\n{sources}"),
         ),
     ]
-    response = deps.provider.chat(messages, [])
+    response = _chat(deps, messages)
     charged = charge(state, response, deps)
     try:
         data = _json_object(response.content)

@@ -26,6 +26,7 @@ from aip.graph.build import build_graph, case_serde, postgres_checkpointer, resu
 from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Ticket
 from aip.models import Case, Tenant
+from aip.observability import span
 from aip.providers.base import ChatProvider, Embedder
 from aip.providers.pricing import PriceTable
 from aip.rag.service import retrieve
@@ -184,7 +185,9 @@ class CaseService:
         if port is None:
             cap = self.authority.hard_cap_minor if self.authority else 50000
             port = InProcessActionPort(make_session_factory(db.get_bind()), cap)  # type: ignore[arg-type]
-        return port.create_return_authorization(state.tenant_id, proposal, f"{state.thread_id}:act")
+        adapter = "mcp" if self.action_port is not None else "inprocess"
+        with span("mcp.tool.create_return_authorization", tenant_id=state.tenant_id, adapter=adapter):
+            return port.create_return_authorization(state.tenant_id, proposal, f"{state.thread_id}:act")
 
     def start(
         self,

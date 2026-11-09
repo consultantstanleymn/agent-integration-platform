@@ -10,7 +10,17 @@ from pydantic import BaseModel, Field, ValidationError, model_validator
 from aip.agent.tools import REGISTRY, ToolContext
 from aip.audit import audit
 from aip.models import AgentRun
-from aip.observability import AGENT_RUNS, LLM_CALLS, TOOL_CALLS, redact, span, tenant_id_var, trace_id_var
+from aip.observability import (
+    AGENT_RUNS,
+    LLM_CALLS,
+    TOOL_CALLS,
+    llm_span,
+    record_usage,
+    redact,
+    span,
+    tenant_id_var,
+    trace_id_var,
+)
 from aip.providers.base import ChatProvider, Message, ProviderError, Usage
 from aip.providers.pricing import estimate_cost_usd, load_prices
 
@@ -87,11 +97,12 @@ def run_agent(
     total_in = total_out = 0
 
     with span("agent.run", tenant_id=tenant_id):
-        for step in range(max_steps):
+        for _step in range(max_steps):
             LLM_CALLS.labels(provider=provider.name).inc()
             try:
-                with span("llm.chat", step=step):
+                with llm_span(getattr(provider, "name", "unknown"), getattr(provider, "model", None)) as llm:
                     resp = provider.chat(messages, specs)
+                    record_usage(llm, resp.usage.input_tokens, resp.usage.output_tokens)
                 total_in += resp.usage.input_tokens
                 total_out += resp.usage.output_tokens
             except ProviderError as exc:

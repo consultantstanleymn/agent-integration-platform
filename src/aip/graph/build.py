@@ -23,6 +23,7 @@ from langgraph.types import Command, interrupt
 from aip.graph import nodes
 from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Decision
+from aip.observability import span
 
 NODE_NAMES = (
     "classify",
@@ -33,6 +34,16 @@ NODE_NAMES = (
     "act",
     "record",
 )
+
+
+def _traced(name: str, fn: Callable[[CaseState], dict[str, Any]]) -> Any:
+    """Run a node inside a span named graph.node.<name>."""
+
+    def run(state: CaseState) -> dict[str, Any]:
+        with span(f"graph.node.{name}", tenant_id=state.tenant_id):
+            return fn(state)
+
+    return run
 
 
 def _human_approval(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
@@ -80,13 +91,15 @@ def build_graph(
     checkpointer: BaseCheckpointSaver | None = None,
 ) -> CompiledStateGraph:
     builder = StateGraph(CaseState)
-    builder.add_node("classify", lambda state: nodes.classify(state, deps))
-    builder.add_node("retrieve", lambda state: nodes.retrieve(state, deps))
-    builder.add_node("propose", lambda state: nodes.propose(state, deps))
-    builder.add_node("check_authority", lambda state: nodes.check_authority(state, deps))
-    builder.add_node("human_approval", lambda state: _human_approval(state, deps))
-    builder.add_node("act", lambda state: nodes.act(state, deps))
-    builder.add_node("record", lambda state: nodes.record(state, deps))
+    builder.add_node("classify", _traced("classify", lambda state: nodes.classify(state, deps)))
+    builder.add_node("retrieve", _traced("retrieve", lambda state: nodes.retrieve(state, deps)))
+    builder.add_node("propose", _traced("propose", lambda state: nodes.propose(state, deps)))
+    builder.add_node(
+        "check_authority", _traced("check_authority", lambda state: nodes.check_authority(state, deps))
+    )
+    builder.add_node("human_approval", _traced("human_approval", lambda state: _human_approval(state, deps)))
+    builder.add_node("act", _traced("act", lambda state: nodes.act(state, deps)))
+    builder.add_node("record", _traced("record", lambda state: nodes.record(state, deps)))
 
     builder.add_edge(START, "classify")
     for source, target in (("classify", "retrieve"), ("retrieve", "propose"), ("propose", "check_authority")):

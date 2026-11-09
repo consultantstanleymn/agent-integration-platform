@@ -10,6 +10,11 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any
 
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from prometheus_client import Counter, Histogram
 
 request_id_var: ContextVar[str] = ContextVar("request_id", default="")
@@ -86,15 +91,84 @@ def parse_traceparent(header: str | None) -> str | None:
     return m.group(1) if m and m.group(1) != "0" * 32 else None
 
 
+_tracer: trace.Tracer = trace.get_tracer("aip")
+_SKIP_ATTRS = {
+    "question",
+    "text",
+    "subject",
+    "body",
+    "query",
+    "answer",
+    "reason",
+}  # personal text never goes in spans
+
+
+def setup_tracing(
+    service_name: str, endpoint: str | None = None, provider: TracerProvider | None = None
+) -> TracerProvider:
+    """Create the tracer provider. With an endpoint, spans go to an OTLP HTTP collector in batches.
+
+    Pass ``provider`` to use your own (tests use an in-memory exporter). Without an endpoint spans are
+    created and dropped, which costs little.
+    """
+    global _tracer
+    if provider is None:
+        provider = TracerProvider(resource=Resource.create({"service.name": service_name}))
+        if endpoint:
+            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=_traces_url(endpoint))))
+    _tracer = provider.get_tracer("aip")
+    return provider
+
+
+def _traces_url(endpoint: str) -> str:
+    base = endpoint.rstrip("/")
+    return base if base.endswith("/v1/traces") else base + "/v1/traces"
+
+
+def get_tracer() -> trace.Tracer:
+    return _tracer
+
+
+def current_trace_id() -> str | None:
+    ctx = trace.get_current_span().get_span_context()
+    return format(ctx.trace_id, "032x") if ctx.is_valid else None
+
+
+def _set_attrs(sp: trace.Span, attrs: dict[str, Any]) -> None:
+    for key, value in attrs.items():
+        if key in _SKIP_ATTRS:
+            continue
+        if isinstance(value, str | int | float | bool):
+            sp.set_attribute(key, value)
+
+
 @contextmanager
-def span(name: str, **attrs: Any) -> Iterator[None]:
-    """A very small trace span: logs name, span id, duration. Not exported to a collector."""
+def span(name: str, **attrs: Any) -> Iterator[trace.Span]:
+    """Open an OpenTelemetry span and also log its name and duration."""
     span_id = secrets.token_hex(8)
     start = time.perf_counter()
-    try:
-        yield
-    finally:
-        ms = round((time.perf_counter() - start) * 1000, 2)
-        logging.getLogger("aip.trace").info(
-            "span", extra={"fields": {"span": name, "span_id": span_id, "duration_ms": ms, **attrs}}
-        )
+    with _tracer.start_as_current_span(name) as sp:
+        _set_attrs(sp, attrs)
+        try:
+            yield sp
+        finally:
+            ms = round((time.perf_counter() - start) * 1000, 2)
+            logging.getLogger("aip.trace").info(
+                "span", extra={"fields": {"span": name, "span_id": span_id, "duration_ms": ms, **attrs}}
+            )
+
+
+@contextmanager
+def llm_span(system: str, model: str | None) -> Iterator[trace.Span]:
+    """A span for one chat call with GenAI attributes. Call ``record_usage`` after the reply."""
+    name = f"chat {model or system}"
+    with _tracer.start_as_current_span(name, kind=trace.SpanKind.CLIENT) as sp:
+        sp.set_attribute("gen_ai.system", system)
+        sp.set_attribute("gen_ai.request.model", model or "unknown")
+        sp.set_attribute("gen_ai.operation.name", "chat")
+        yield sp
+
+
+def record_usage(sp: trace.Span, input_tokens: int, output_tokens: int) -> None:
+    sp.set_attribute("gen_ai.usage.input_tokens", input_tokens)
+    sp.set_attribute("gen_ai.usage.output_tokens", output_tokens)

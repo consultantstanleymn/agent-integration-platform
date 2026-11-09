@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 import time
 import uuid
@@ -6,6 +7,8 @@ import uuid
 import httpx
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
+from opentelemetry.trace import SpanKind
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from sqlalchemy import Engine
 
@@ -19,9 +22,12 @@ from aip.observability import (
     HTTP_LATENCY,
     HTTP_REQUESTS,
     configure_logging,
+    current_trace_id,
+    get_tracer,
     new_trace_id,
     parse_traceparent,
     request_id_var,
+    setup_tracing,
     tenant_id_var,
     trace_id_var,
 )
@@ -45,6 +51,9 @@ def create_app(
 ) -> FastAPI:
     """Build the app. Tests pass fakes for everything that touches the outside world."""
     settings = settings or Settings()
+    endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT")
+    if endpoint:
+        setup_tracing("agent-integration-platform", endpoint)
     app = FastAPI(
         title="Agent Integration Platform",
         version="0.1.0",
@@ -79,16 +88,26 @@ def create_app(
         rid = request.headers.get("x-request-id", "")
         rid = rid if re.fullmatch(r"[A-Za-z0-9._-]{1,64}", rid) else uuid.uuid4().hex
         request_id_var.set(rid)
-        trace_id_var.set(parse_traceparent(request.headers.get("traceparent")) or new_trace_id())
         tenant_id_var.set(None)
         start = time.perf_counter()
-        try:
-            response: Response = await call_next(request)
-        except Exception:
-            log.exception("unhandled error")
-            response = JSONResponse({"detail": "internal error", "request_id": rid}, status_code=500)
+        parent = TraceContextTextMapPropagator().extract(dict(request.headers))
+        with get_tracer().start_as_current_span(
+            f"{request.method} {request.url.path}", context=parent, kind=SpanKind.SERVER
+        ) as server_span:
+            trace_id_var.set(
+                current_trace_id() or parse_traceparent(request.headers.get("traceparent")) or new_trace_id()
+            )
+            try:
+                response: Response = await call_next(request)
+            except Exception:
+                log.exception("unhandled error")
+                response = JSONResponse({"detail": "internal error", "request_id": rid}, status_code=500)
+            route = getattr(request.scope.get("route"), "path", "unmatched")
+            server_span.update_name(f"{request.method} {route}")
+            server_span.set_attribute("http.request.method", request.method)
+            server_span.set_attribute("http.route", route)
+            server_span.set_attribute("http.response.status_code", response.status_code)
         elapsed = time.perf_counter() - start
-        route = getattr(request.scope.get("route"), "path", "unmatched")
         HTTP_REQUESTS.labels(request.method, route, str(response.status_code)).inc()
         HTTP_LATENCY.labels(route).observe(elapsed)
         response.headers["X-Request-Id"] = rid
