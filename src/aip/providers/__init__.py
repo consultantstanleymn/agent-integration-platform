@@ -37,6 +37,17 @@ def _build_chat(s: Settings, provider: str) -> ChatProvider:
 
 
 def build_embedder(s: Settings) -> Embedder:
+    embedder = _build_embedder(s)
+    if s.redis_url and s.embed_cache:
+        import redis
+
+        from aip.providers.cache import CachedEmbedder
+
+        return CachedEmbedder(embedder, redis.Redis.from_url(s.redis_url), model=s.embedding_provider)
+    return embedder
+
+
+def _build_embedder(s: Settings) -> Embedder:
     if s.embedding_provider == "fake":
         return FakeProvider()
     if s.embedding_provider == "local_onnx":

@@ -72,6 +72,13 @@ services:
       - "127.0.0.1:25186:16686"
       - "127.0.0.1:25118:4318"
 
+  # Shared rate limit and embedding cache. Start it with: --profile cache
+  redis:
+    image: docker.io/library/redis:7-alpine
+    profiles: ["cache"]
+    ports:
+      - "127.0.0.1:25179:6379"
+
   # Authored, not run: an optional AWS emulator. Start it with: --profile localstack
   localstack:
     image: docker.io/localstack/localstack:4.0
