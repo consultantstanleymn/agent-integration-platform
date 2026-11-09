@@ -10,6 +10,22 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: aip
+          POSTGRES_PASSWORD: aip
+          POSTGRES_DB: aip_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U aip -d aip_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      AIP_TEST_PG_URL: postgresql+psycopg://aip:aip@localhost:5432/aip_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -51,3 +67,5 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
       - run: terraform -chdir=infra init -backend=false
       - run: terraform -chdir=infra validate
+      - run: terraform -chdir=infra/aws-engagement init -backend=false
+      - run: terraform -chdir=infra/aws-engagement validate
