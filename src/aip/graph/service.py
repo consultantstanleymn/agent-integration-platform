@@ -27,6 +27,7 @@ from aip.models import Case, Tenant
 from aip.providers.base import ChatProvider, Embedder
 from aip.rag.service import retrieve
 from aip.rag.store import Hit
+from aip.redaction import Redactor, default_redactor
 
 
 @dataclass
@@ -56,16 +57,17 @@ def open_checkpointer(url: str) -> CheckpointerHandle:
     return CheckpointerHandle(saver=SqliteSaver(connection), close=connection.close)
 
 
-def upsert_case(db: Session, state: CaseState) -> Case:
+def upsert_case(db: Session, state: CaseState, redactor: Redactor | None = None) -> Case:
     """Insert or update the ``Case`` row for one graph run."""
+    clean = redactor or default_redactor()
     row = db.scalar(select(Case).where(Case.thread_id == state.thread_id))
     if row is None:
         row = Case(tenant_id=state.tenant_id, thread_id=state.thread_id)
         db.add(row)
     row.status = state.status
     row.category = state.category
-    row.proposal = state.proposal.model_dump() if state.proposal else None
-    row.decision = state.decision.model_dump() if state.decision else None
+    row.proposal = clean.redact(state.proposal.model_dump()) if state.proposal else None
+    row.decision = clean.redact(state.decision.model_dump()) if state.decision else None
     row.steps_used = state.steps_used
     row.tokens_used = state.tokens_used
     db.flush()
@@ -105,6 +107,7 @@ class CaseService:
         max_steps: int = 6,
         max_tokens: int = 4000,
         authority: Authority | None = None,
+        redactor: Redactor | None = None,
     ) -> None:
         self.checkpoint_url = checkpoint_url
         self.provider = provider
@@ -113,6 +116,7 @@ class CaseService:
         self.max_steps = max_steps
         self.max_tokens = max_tokens
         self.authority = authority
+        self.redactor = redactor or default_redactor()
         self._handle: CheckpointerHandle | None = None
 
     def _checkpointer(self) -> BaseCheckpointSaver:
@@ -130,7 +134,7 @@ class CaseService:
             return retrieve(db, tenant_id, self.embedder, query, k)
 
         def record_state(state: CaseState) -> None:
-            upsert_case(db, state)
+            upsert_case(db, state, self.redactor)
             audit(
                 db,
                 state.tenant_id,
@@ -138,6 +142,7 @@ class CaseService:
                 thread_id=state.thread_id,
                 status=state.status,
                 refusal_reason=state.refusal_reason,
+                redactor=self.redactor,
             )
             db.commit()
 
@@ -167,7 +172,7 @@ class CaseService:
         )
         graph = build_graph(self._deps(db), self._checkpointer())
         result = run_case(graph, state)
-        upsert_case(db, result)
+        upsert_case(db, result, self.redactor)
         db.commit()
         return result
 
@@ -183,7 +188,7 @@ class CaseService:
         """Resume a paused case with a team lead decision. The caller checks the role and the status."""
         graph = build_graph(self._deps(db), self._checkpointer())
         result = resume_case(graph, thread_id, {"decision": decision, "actor": actor, "reason": reason})
-        upsert_case(db, result)
+        upsert_case(db, result, self.redactor)
         audit(
             db,
             tenant.id,
@@ -191,6 +196,7 @@ class CaseService:
             thread_id=thread_id,
             actor=actor,
             reason=reason,
+            redactor=self.redactor,
         )
         db.commit()
         return result
