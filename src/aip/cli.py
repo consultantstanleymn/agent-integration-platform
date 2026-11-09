@@ -22,8 +22,14 @@ from aip.tenants import ALL_TOOLS, create_tenant
 
 
 def _retrieval_command(args: argparse.Namespace) -> int:
-    from aip.evals.retrieval import ingest_corpus, prepare_database, run_retrieval_eval
+    from aip.evals.retrieval import (
+        ingest_corpus,
+        ingest_corpus_qdrant,
+        prepare_database,
+        run_retrieval_eval,
+    )
     from aip.providers.fake import FakeProvider
+    from aip.rag.retriever import Retriever
     from aip.rag.service import build_retriever
     from aip.tenants import create_tenant
 
@@ -40,8 +46,24 @@ def _retrieval_command(args: argparse.Namespace) -> int:
         with make_session_factory(engine)() as db:
             tenant, _ = create_tenant(db, "retrieval-eval", ["search_knowledge_base"])
             db.commit()
-            ingest_corpus(db, tenant.id, embedder, Path(args.corpus))
-            retriever = build_retriever(db, args.retriever, args.rrf_k)
+            retriever: Retriever
+            if args.store == "qdrant":
+                from qdrant_client import QdrantClient
+
+                from aip.rag.qdrant_store import QdrantStore
+
+                client = (
+                    QdrantClient(args.qdrant_url)
+                    if args.qdrant_url != ":memory:"
+                    else QdrantClient(":memory:")
+                )
+                dim = len(embedder.embed(["dimension probe"])[0])
+                qstore = QdrantStore(client, "retrieval-eval", dim, args.rrf_k)
+                ingest_corpus_qdrant(qstore, tenant.id, embedder, Path(args.corpus))
+                retriever = qstore
+            else:
+                ingest_corpus(db, tenant.id, embedder, Path(args.corpus))
+                retriever = build_retriever(db, args.retriever, args.rrf_k)
             report = run_retrieval_eval(
                 Path(args.golden),
                 Path(args.corpus),
@@ -56,6 +78,7 @@ def _retrieval_command(args: argparse.Namespace) -> int:
         engine.dispose()
     report["config"] = {
         "embedder": args.embedder,
+        "store": args.store,
         "retriever": type(retriever).__name__,
         "rrf_k": args.rrf_k,
         "db": make_url(args.db_url).get_backend_name(),
@@ -121,6 +144,10 @@ def main(argv: list[str] | None = None) -> int:
     rt.add_argument("--embedder", choices=["fake", "local_onnx"], default="fake")
     rt.add_argument("--rrf-k", type=int, default=60)
     rt.add_argument("--retriever", choices=["auto", "cosine", "pg"], default="auto")
+    rt.add_argument(
+        "--store", choices=["pg", "qdrant"], default="pg", help="pg: the SQL store. qdrant: Qdrant"
+    )
+    rt.add_argument("--qdrant-url", default=":memory:", help="http://127.0.0.1:25133 or :memory:")
     rt.add_argument("--golden", default="evals/retrieval/golden.yaml")
     rt.add_argument("--corpus", default="evals/retrieval/corpus")
     rt.add_argument("--json", action="store_true")

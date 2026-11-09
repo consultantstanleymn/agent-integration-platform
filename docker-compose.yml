@@ -79,6 +79,14 @@ services:
     ports:
       - "127.0.0.1:25179:6379"
 
+  # Vector database for the comparison with pgvector. Start it with: --profile qdrant
+  qdrant:
+    image: docker.io/qdrant/qdrant:v1.13.4
+    profiles: ["qdrant"]
+    ports:
+      - "127.0.0.1:25133:6333"
+      - "127.0.0.1:25134:6334"
+
   # Authored, not run: an optional AWS emulator. Start it with: --profile localstack
   localstack:
     image: docker.io/localstack/localstack:4.0

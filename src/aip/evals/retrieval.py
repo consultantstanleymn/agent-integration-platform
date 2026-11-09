@@ -79,6 +79,19 @@ def ingest_corpus(db: Session, tenant_id: int, embedder: Embedder, corpus_dir: P
     return count
 
 
+def ingest_corpus_qdrant(store: Any, tenant_id: int, embedder: Embedder, corpus_dir: Path) -> int:
+    """Chunk and embed the corpus the same way as ingest_document, and write it to a QdrantStore."""
+    from aip.rag.chunking import chunk_text
+
+    count = 0
+    for doc_id, path in enumerate(sorted(corpus_dir.glob("*.md")), start=1):
+        label, body = parse_front_matter(path.read_text())
+        chunks = chunk_text(body)
+        store.add(tenant_id, doc_id, path.name, chunks, embedder.embed(chunks), label)
+        count += 1
+    return count
+
+
 def run_retrieval_eval(
     golden_path: Path,
     corpus_dir: Path,
