@@ -48,8 +48,10 @@ flowchart LR
     API --> OBS
 ```
 
-Code map (`src/aip/`): `api/` routes and middleware, `agent/` loop and tools, `providers/` LLM adapters,
-`rag/` chunking and store, `integrations/` webhooks, OAuth, CRM, idempotency, `evals/` harness,
+The full picture, with the case graph, the MCP tool, the retrieval stores, the cloud ports and the trust boundaries, is in [docs/engagement/ARCHITECTURE.md](docs/engagement/ARCHITECTURE.md).
+
+Code map (`src/aip/`): `api/` routes and middleware, `agent/` loop and tools, `graph/` case workflow, `mcp_server/` the one write tool,
+`ports/` blob, queue and secrets, `providers/` LLM adapters, `rag/` chunking and retrieval, `integrations/` webhooks, OAuth, CRM, idempotency, `evals/` harness,
 `observability.py`, `security.py`, `models.py`.
 
 ## Quick start (local, no Docker, no API keys)
