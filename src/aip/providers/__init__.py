@@ -37,6 +37,10 @@ def _build_chat(s: Settings, provider: str) -> ChatProvider:
 def build_embedder(s: Settings) -> Embedder:
     if s.embedding_provider == "fake":
         return FakeProvider()
+    if s.embedding_provider == "local_onnx":
+        from aip.providers.local_onnx import LocalOnnxEmbedder
+
+        return LocalOnnxEmbedder(s.local_embed_model)
     if s.embedding_provider == "openai_compat":
         return OpenAICompatProvider(
             s.openai_base_url,

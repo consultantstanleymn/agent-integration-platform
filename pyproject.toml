@@ -28,6 +28,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["moto[s3,sqs,secretsmanager,server]>=5.0", "python-hcl2>=4.3", "pytest>=8", "pytest-cov>=5", "ruff>=0.5", "mypy>=1.10", "types-PyYAML"]
+local-embed = ["fastembed>=0.4"]
 
 [project.scripts]
 aip = "aip.cli:main"
