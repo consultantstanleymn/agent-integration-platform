@@ -90,7 +90,7 @@ def run_case_suite(path: Path, settings: Settings, chat: ChatProvider | None = N
             try:
                 state = service.start(db, tenant, case.role, Ticket(**case.ticket))
                 if state.status == "awaiting_approval" and case.approve is not None:
-                    decision = "approve" if case.approve else "reject"
+                    decision: Literal["approve", "reject"] = "approve" if case.approve else "reject"
                     state = service.decide(db, tenant, state.thread_id, decision, "eval-lead")
             except Exception as exc:  # noqa: BLE001  a missing cassette or provider error fails the case, not the run
                 results.append(
