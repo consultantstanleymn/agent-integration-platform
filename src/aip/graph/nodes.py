@@ -42,6 +42,7 @@ class NodeDeps:
     max_tokens: int = 4000
     authority: Authority | None = None
     prices: PriceTable = field(default_factory=dict)
+    retrieve_as: Callable[[int, str, int, str], list[Hit]] | None = None  # role-aware retrieval
 
 
 def _json_object(text: str) -> dict[str, Any]:
@@ -103,7 +104,10 @@ def classify(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
 
 def retrieve(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
     query = f"{state.ticket.subject}\n{state.ticket.body}"
-    hits = deps.retrieve(state.tenant_id, query, RETRIEVAL_K)
+    if deps.retrieve_as is not None:
+        hits = deps.retrieve_as(state.tenant_id, query, RETRIEVAL_K, state.role)
+    else:
+        hits = deps.retrieve(state.tenant_id, query, RETRIEVAL_K)
     return {"retrieved": [asdict(hit) for hit in hits]}
 
 

@@ -48,10 +48,7 @@ class TenantKeyCreate(BaseModel):
 class DocumentIn(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     text: str = Field(min_length=1, max_length=500_000)
-
-
-class AsyncDocumentIn(DocumentIn):
-    access_label: Literal["agent", "team_lead"] = "agent"
+    access_label: Literal["public", "team_lead"] = "public"
 
 
 class SearchIn(BaseModel):
@@ -92,7 +89,10 @@ def _ticket_json(t: Ticket) -> dict[str, Any]:
 
 def _ctx(request: Request, db: Session, tenant: Tenant) -> ToolContext:
     st = request.app.state
-    return ToolContext(db=db, tenant=tenant, embedder=st.embedder, http=st.http, settings=st.settings)
+    role = getattr(request.state, "role", "agent")
+    return ToolContext(
+        db=db, tenant=tenant, embedder=st.embedder, http=st.http, settings=st.settings, role=role
+    )
 
 
 def _agent(
@@ -184,7 +184,7 @@ def add_document(
     tenant: Tenant = Depends(current_tenant),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    n = ingest_document(db, tenant.id, request.app.state.embedder, body.name, body.text)
+    n = ingest_document(db, tenant.id, request.app.state.embedder, body.name, body.text, body.access_label)
     audit(db, tenant.id, "document.ingest", name=body.name, chunks=n)
     db.commit()
     return {"name": body.name, "chunks": n}
@@ -192,7 +192,7 @@ def add_document(
 
 @router.post("/v1/documents/async", status_code=202, tags=["knowledge base"])
 def add_document_async(
-    body: AsyncDocumentIn,
+    body: DocumentIn,
     request: Request,
     tenant: Tenant = Depends(current_tenant),
     db: Session = Depends(get_db),
@@ -268,7 +268,8 @@ def search(
     tenant: Tenant = Depends(current_tenant),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    hits = retrieve(db, tenant.id, request.app.state.embedder, body.query, body.k)
+    role = getattr(request.state, "role", "agent")
+    hits = retrieve(db, tenant.id, request.app.state.embedder, body.query, body.k, role)
     return {
         "hits": [{"doc": h.doc, "chunk": h.chunk, "score": round(h.score, 4), "text": h.text} for h in hits]
     }

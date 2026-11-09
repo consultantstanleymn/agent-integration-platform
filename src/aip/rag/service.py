@@ -9,7 +9,19 @@ from aip.rag.retriever import CosineRetriever, Retriever, ScoredHit, SearchQuery
 from aip.rag.store import Hit, SqlCosineStore
 
 
-def ingest_document(db: Session, tenant_id: int, embedder: Embedder, name: str, text: str) -> int:
+def labels_for_role(role: str) -> frozenset[str]:
+    """Access labels a caller may read. Agents read public documents. Team leads also read team_lead."""
+    return frozenset({"public", "team_lead"}) if role == "team_lead" else frozenset({"public"})
+
+
+def ingest_document(
+    db: Session,
+    tenant_id: int,
+    embedder: Embedder,
+    name: str,
+    text: str,
+    access_label: str = "public",
+) -> int:
     """Chunk, embed and store a document. Re-ingesting the same name replaces it. Returns chunk count."""
     chunks = chunk_text(text)
     if not chunks:
@@ -19,7 +31,7 @@ def ingest_document(db: Session, tenant_id: int, embedder: Embedder, name: str, 
         db.execute(delete(Chunk).where(Chunk.document_id == old.id))
         db.delete(old)
         db.flush()
-    doc = Document(tenant_id=tenant_id, name=name)
+    doc = Document(tenant_id=tenant_id, name=name, access_label=access_label)
     db.add(doc)
     db.flush()
     store: SqlCosineStore | PgHybridStore
@@ -27,14 +39,28 @@ def ingest_document(db: Session, tenant_id: int, embedder: Embedder, name: str, 
         store = PgHybridStore(db)
     else:
         store = SqlCosineStore(db)
-    store.add(tenant_id, doc.id, chunks, embedder.embed(chunks))
+    store.add(tenant_id, doc.id, chunks, embedder.embed(chunks), access_label)
     return len(chunks)
 
 
-def retrieve(db: Session, tenant_id: int, embedder: Embedder, query: str, k: int = 3) -> list[Hit]:
-    """Vector search over public chunks. The response shape of /v1/search does not change."""
+def retrieve(
+    db: Session,
+    tenant_id: int,
+    embedder: Embedder,
+    query: str,
+    k: int = 3,
+    role: str = "agent",
+) -> list[Hit]:
+    """Vector search over the chunks that ``role`` may read. The response shape of /v1/search is fixed."""
     vec = embedder.embed([query])[0]
-    q = SearchQuery(tenant_id=tenant_id, text=query, vector=vec, k=k, mode="vector")
+    q = SearchQuery(
+        tenant_id=tenant_id,
+        text=query,
+        vector=vec,
+        k=k,
+        mode="vector",
+        allowed_labels=labels_for_role(role),
+    )
     return [Hit(h.doc, h.chunk, h.score, h.text) for h in retrieve_q(db, q)]
 
 

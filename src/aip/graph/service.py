@@ -145,6 +145,9 @@ class CaseService:
         def retrieve_hits(tenant_id: int, query: str, k: int) -> list[Hit]:
             return retrieve(db, tenant_id, self.embedder, query, k)
 
+        def retrieve_as(tenant_id: int, query: str, k: int, role: str) -> list[Hit]:
+            return retrieve(db, tenant_id, self.embedder, query, k, role)
+
         def record_state(state: CaseState) -> None:
             upsert_case(db, state, self.redactor)
             audit(
@@ -161,6 +164,7 @@ class CaseService:
         return NodeDeps(
             provider=self.provider,
             retrieve=retrieve_hits,
+            retrieve_as=retrieve_as,
             approval_limit_minor=self.approval_limit_minor,
             act=lambda state: self._act(db, state),
             record=record_state,

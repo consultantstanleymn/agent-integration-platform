@@ -27,6 +27,7 @@ class ToolContext:
     retrieved: dict[str, dict[str, Any]] = field(default_factory=dict)  # citation id -> hit
     run_key: str = field(default_factory=lambda: uuid.uuid4().hex)  # names this run in outbound event ids
     event_seq: int = 0  # counts outbound events in this run
+    role: str = "agent"  # decides which access labels the search tool may read
 
 
 class SearchArgs(BaseModel):
@@ -49,7 +50,7 @@ class WebhookArgs(BaseModel):
 
 
 def search_knowledge_base(ctx: ToolContext, a: SearchArgs) -> dict[str, Any]:
-    hits = retrieve(ctx.db, ctx.tenant.id, ctx.embedder, a.query, a.k)
+    hits = retrieve(ctx.db, ctx.tenant.id, ctx.embedder, a.query, a.k, ctx.role)
     out = []
     for h in hits:
         ctx.retrieved[f"{h.doc}#{h.chunk}"] = {

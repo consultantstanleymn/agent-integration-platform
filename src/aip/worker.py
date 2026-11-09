@@ -39,7 +39,14 @@ def run_once(
             with session_factory() as db:
 
                 def ingest(db: Session = db, body: dict[str, Any] = body, text: str = text) -> dict[str, Any]:
-                    n = ingest_document(db, body["tenant_id"], embedder, body["name"], text)
+                    n = ingest_document(
+                        db,
+                        body["tenant_id"],
+                        embedder,
+                        body["name"],
+                        text,
+                        body.get("access_label", "public"),
+                    )
                     audit(db, body["tenant_id"], "document.ingest", name=body["name"], chunks=n)
                     return {"name": body["name"], "chunks": n}
 
