@@ -1,0 +1,21 @@
+# Evidence: Local ONNX embedder: 384 dimensions and a similarity check
+label: VERIFIED LOCALLY
+date: 2026-11-09 08:35 UTC
+code commit: f91b5fbfa7dbbf4b935de121f347e3aa8dd62b81
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: .venv/bin/pytest tests/test_local_onnx_embedder.py -v -W ignore -o addopts=
+notes: Model name BAAI/bge-small-en-v1.5, served by fastembed 0.9.1 as the quantized ONNX file from the model hub (snapshot aa8f8b06). model_optimized.onnx sha256 51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431, 76 bytes. Python 3.14.7. The download is a file download, not an LLM call.
+---
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0 -- ./.venv/bin/python
+cachedir: .pytest_cache
+rootdir: .
+configfile: pyproject.toml
+plugins: anyio-4.16.0, cov-7.1.0, langsmith-0.14.17
+collecting ... collected 1 item
+
+tests/test_local_onnx_embedder.py::test_dimension_and_similarity PASSED  [100%]
+
+============================== 1 passed in 0.72s ===============================
+exit code: 0
