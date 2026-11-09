@@ -24,9 +24,17 @@ start() {
             -e "POSTGRES_DB=${DB_NAME}" \
             "${IMAGE}" >/dev/null
     fi
-    for _ in {1..60}; do
-        if podman exec "${CONTAINER}" pg_isready -U "${DB_USER}" -d "${DB_NAME}" >/dev/null 2>&1; then
-            return 0
+    # The image starts a temporary server for its first set-up and then restarts. Only the final server
+    # listens on TCP, so test TCP twice in a row.
+    local ok=0
+    for _ in {1..90}; do
+        if podman exec "${CONTAINER}" pg_isready -h 127.0.0.1 -U "${DB_USER}" -d "${DB_NAME}" >/dev/null 2>&1; then
+            ok=$((ok + 1))
+            if [ "${ok}" -ge 2 ]; then
+                return 0
+            fi
+        else
+            ok=0
         fi
         sleep 1
     done
