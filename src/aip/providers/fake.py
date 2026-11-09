@@ -112,6 +112,8 @@ class FakeProvider:
 
     @staticmethod
     def _proposal(text: str) -> dict[str, object]:
+        full = text
+        text = text.split("\n\nPolicy:")[0]  # read the ticket only; policy text must not change the plan
         category = FakeProvider._category(text)
         action = {"refund": "refund", "warranty": "replacement", "damage": "replacement"}.get(
             category, "escalate"
@@ -121,7 +123,7 @@ class FakeProvider:
         if price:
             amount = int(round(Decimal(price.group(1)) * 100))
         order = re.search(r"ORD-\d+", text)
-        citations = re.findall(r"(?m)^\s*\[doc:([^\]#\s]+)", text)
+        citations = re.findall(r"(?m)^\s*\[doc:([^\]#\s]+)", full)
         return {
             "action": action,
             "amount_minor": amount,

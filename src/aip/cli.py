@@ -42,7 +42,8 @@ def main(argv: list[str] | None = None) -> int:
     e = sub.add_parser("eval", help="run or report evals")
     esub = e.add_subparsers(dest="eval_cmd", required=True)
     r = esub.add_parser("run")
-    r.add_argument("--testset", default="evals/testset.yaml")
+    r.add_argument("--suite", choices=["qa", "cases"], default="qa")
+    r.add_argument("--testset", default=None)
     r.add_argument("--prompt-version", default=None)
     r.add_argument("--out", default="evals/results/latest.json")
     r.add_argument("--min-pass-rate", type=float, default=0.0)
@@ -117,7 +118,13 @@ def main(argv: list[str] | None = None) -> int:
     from aip.evals.runner import format_report, run_evals
 
     if args.eval_cmd == "run":
-        report = run_evals(Path(args.testset), Settings(), args.prompt_version)
+        if args.suite == "cases":
+            from aip.evals.cases import format_case_report, run_case_suite
+
+            report = run_case_suite(Path(args.testset or "evals/cases.yaml"), Settings())
+            print(format_case_report(report))
+            return 0 if report["pass_rate"] >= args.min_pass_rate else 1
+        report = run_evals(Path(args.testset or "evals/testset.yaml"), Settings(), args.prompt_version)
         out = Path(args.out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(report, indent=2))
