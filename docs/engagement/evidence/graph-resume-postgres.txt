@@ -1,0 +1,21 @@
+# Evidence: Case graph resumes after a restart on a Postgres checkpointer
+label: VERIFIED LOCALLY
+date: 2026-11-09 06:37 UTC
+code commit: 2060c1b0b3140b1a12e238021cb20e8e33f59f64
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: scripts/pg-test.sh start && export AIP_TEST_PG_URL=$(scripts/pg-test.sh url) && .venv/bin/pytest -m pg tests/test_graph_resume_pg.py -v -W ignore -o addopts=; scripts/pg-test.sh stop
+notes: Postgres 16 with pgvector 0.8.0 in a local podman container. Without AIP_TEST_PG_URL the same test is skipped.
+---
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0 -- ./.venv/bin/python
+cachedir: .pytest_cache
+rootdir: .
+configfile: pyproject.toml
+plugins: anyio-4.16.0, cov-7.1.0, langsmith-0.14.17
+collecting ... collected 1 item
+
+tests/test_graph_resume_pg.py::test_resume_after_restart_postgres PASSED [100%]
+
+============================== 1 passed in 0.90s ===============================
+exit code: 0
