@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     # Chat provider: fake | openai_compat | anthropic
     llm_provider: str = "fake"
     # Embedding provider: fake | openai_compat (Anthropic has no embeddings API)
+    retriever: Literal["auto", "cosine", "pg", "qdrant"] = "auto"
+    rrf_k: int = 60
     embedding_dim: int = 256  # must equal the embedder output size; the fake embedder uses 256
     embedding_provider: str = "fake"
     openai_base_url: str = "http://localhost:11434/v1"  # Ollama default
