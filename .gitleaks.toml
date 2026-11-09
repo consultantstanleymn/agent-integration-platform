@@ -1,0 +1,13 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known public or fake test values"
+paths = [
+  '''evals/cassettes/''',
+]
+regexes = [
+  '''demo-admin''',     # demo admin token printed in docs/DEMO.md; not a real secret
+  '''admin-secret''',   # fixed admin token used only by the test fixtures
+  '''aip_test_key_[a-z0-9]+''', # fake API keys that tests create
+]

@@ -1,0 +1,85 @@
+name: security
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  sast:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install bandit semgrep
+      - name: Bandit (medium and high)
+        run: bandit -r src -ll
+      - name: Semgrep local rules
+        run: semgrep --config .semgrep.yml --metrics=off --error src
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python
+      - uses: github/codeql-action/analyze@v3
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITLEAKS_CONFIG: .gitleaks.toml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Security exceptions are valid and not expired
+        run: python3 scripts/check_security_exceptions.py security/exceptions.json
+
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]" pip-audit
+      - name: Audit pinned dependencies
+        run: |
+          pip freeze --exclude-editable > requirements-audit.txt
+          pip-audit -r requirements-audit.txt --no-deps --disable-pip
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t agent-integration-platform:scan .
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: agent-integration-platform:scan
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          format: cyclonedx
+          output: sbom-source.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom-source
+          path: sbom-source.cdx.json

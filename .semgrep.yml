@@ -1,0 +1,29 @@
+rules:
+  - id: no-eval
+    languages: [python]
+    severity: ERROR
+    message: Do not call eval().
+    pattern: eval(...)
+  - id: no-shell-true
+    languages: [python]
+    severity: ERROR
+    message: Do not use subprocess with shell=True.
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+  - id: no-httpx-verify-false
+    languages: [python]
+    severity: ERROR
+    message: Do not turn off TLS verification in httpx.
+    pattern: httpx.$FUNC(..., verify=False, ...)
+  - id: no-unsafe-yaml-load
+    languages: [python]
+    severity: ERROR
+    message: Use yaml.safe_load. Do not call yaml.load without a safe loader.
+    patterns:
+      - pattern: yaml.load(...)
+      - pattern-not: yaml.load(..., Loader=yaml.SafeLoader)
+      - pattern-not: yaml.load(..., Loader=SafeLoader)
+  - id: no-fstring-sql-in-text
+    languages: [python]
+    severity: ERROR
+    message: Do not build SQL with an f-string inside text(). Use bound parameters.
+    pattern: text(f"...")
