@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from aip.config import Settings
-from aip.models import Tenant
+from aip.models import Tenant, TenantKey
 from aip.observability import tenant_id_var
 from aip.security import hash_key
 
@@ -35,11 +35,21 @@ def current_tenant(
         key = authorization[7:].strip()
     if not key:
         raise HTTPException(401, "missing API key")
-    tenant = db.scalar(select(Tenant).where(Tenant.api_key_hash == hash_key(key)))
-    if not tenant:
-        raise HTTPException(401, "invalid API key")
+    key_hash = hash_key(key)
+    tenant = db.scalar(select(Tenant).where(Tenant.api_key_hash == key_hash))
+    if tenant:
+        role = "agent"
+    else:
+        tenant_key = db.scalar(select(TenantKey).where(TenantKey.key_hash == key_hash))
+        if not tenant_key:
+            raise HTTPException(401, "invalid API key")
+        tenant = db.get(Tenant, tenant_key.tenant_id)
+        if not tenant:
+            raise HTTPException(401, "invalid API key")
+        role = tenant_key.role
     tenant_id_var.set(tenant.id)
     request.state.tenant_id = tenant.id  # sync deps run in a thread copy of the context
+    request.state.role = role
     wait = request.app.state.rate_limiter.check(f"tenant:{tenant.id}")
     if wait:
         raise HTTPException(429, "rate limit exceeded", headers={"Retry-After": str(int(wait) + 1)})

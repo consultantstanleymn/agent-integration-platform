@@ -26,6 +26,31 @@ class Tenant(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 
+class TenantKey(Base):
+    __tablename__ = "tenant_keys"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"), index=True)
+    key_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    role: Mapped[str] = mapped_column(String(20), default="agent")
+    label: Mapped[str] = mapped_column(String(100), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class Case(Base):
+    __tablename__ = "cases"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"), index=True)
+    thread_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    status: Mapped[str] = mapped_column(String(30), default="running")
+    category: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    proposal: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    decision: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    steps_used: Mapped[int] = mapped_column(Integer, default=0)
+    tokens_used: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
+
+
 class Document(Base):
     __tablename__ = "documents"
     __table_args__ = (UniqueConstraint("tenant_id", "name"),)

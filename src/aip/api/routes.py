@@ -16,9 +16,10 @@ from aip.integrations.crm import CrmClient, customer_to_text
 from aip.integrations.idempotency import run_once
 from aip.integrations.oauth import ClientCredentialsTokenProvider
 from aip.integrations.webhooks import UnsafeTargetError, validate_target_url, verify
-from aip.models import AuditLog, Chunk, Document, Tenant, Ticket
+from aip.models import AuditLog, Chunk, Document, Tenant, TenantKey, Ticket
 from aip.rag.extract import extract_text
 from aip.rag.service import ingest_document, retrieve
+from aip.security import hash_key, new_api_key
 from aip.tenants import ALL_TOOLS, create_tenant
 from aip.tickets import create_ticket, get_ticket
 
@@ -33,6 +34,11 @@ class TenantCreate(BaseModel):
         Literal["search_knowledge_base", "lookup_ticket", "create_ticket", "call_customer_webhook"]
     ] = ["search_knowledge_base", "lookup_ticket"]
     webhook_url: str | None = None
+
+
+class TenantKeyCreate(BaseModel):
+    role: Literal["agent", "team_lead"] = "agent"
+    label: str = Field(default="", max_length=100)
 
 
 class DocumentIn(BaseModel):
@@ -119,6 +125,34 @@ def admin_create_tenant(
         "name": tenant.name,
         "api_key": key,
         "webhook_secret": tenant.webhook_secret,
+        "note": "Store the api_key now. It is not shown again.",
+    }
+
+
+@router.post(
+    "/admin/tenants/{tenant_id}/keys",
+    status_code=201,
+    tags=["admin"],
+    dependencies=[Depends(require_admin)],
+)
+def admin_create_tenant_key(
+    tenant_id: int, body: TenantKeyCreate, db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    tenant = db.get(Tenant, tenant_id)
+    if not tenant:
+        raise HTTPException(404, "tenant not found")
+    key = new_api_key()
+    row = TenantKey(tenant_id=tenant.id, key_hash=hash_key(key), role=body.role, label=body.label)
+    db.add(row)
+    db.flush()
+    audit(db, tenant.id, "tenant_key.create", role=body.role, label=body.label, key_id=row.id)
+    db.commit()
+    return {
+        "id": row.id,
+        "tenant_id": tenant.id,
+        "role": row.role,
+        "label": row.label,
+        "api_key": key,
         "note": "Store the api_key now. It is not shown again.",
     }
 
