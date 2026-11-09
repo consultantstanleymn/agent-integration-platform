@@ -314,6 +314,43 @@ def post_case(
     }
 
 
+class DecisionIn(BaseModel):
+    decision: Literal["approve", "reject"]
+    reason: str = Field(default="", max_length=500)
+
+
+@router.get("/v1/cases", tags=["cases"])
+def list_cases(
+    request: Request,
+    status: str | None = None,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    service: CaseService = request.app.state.case_service
+    return [case_json(row) for row in service.list_cases(db, tenant, status)]
+
+
+@router.post("/v1/cases/{thread_id}/decision", tags=["cases"])
+def decide_case(
+    thread_id: str,
+    body: DecisionIn,
+    request: Request,
+    tenant: Tenant = Depends(current_tenant),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    if getattr(request.state, "role", "agent") != "team_lead":
+        raise HTTPException(403, "team_lead role required")
+    service: CaseService = request.app.state.case_service
+    row = service.get(db, tenant, thread_id)
+    if row is None:
+        raise HTTPException(404, "case not found")
+    if row.status != "awaiting_approval":
+        raise HTTPException(409, "case is not awaiting approval")
+    actor = getattr(request.state, "key_label", "unknown")
+    state = service.decide(db, tenant, thread_id, body.decision, actor, body.reason)
+    return {"thread_id": thread_id, "status": state.status, "action_result": state.action_result}
+
+
 @router.get("/v1/cases/{thread_id}", tags=["cases"])
 def read_case(
     thread_id: str,

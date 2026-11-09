@@ -39,6 +39,7 @@ def current_tenant(
     tenant = db.scalar(select(Tenant).where(Tenant.api_key_hash == key_hash))
     if tenant:
         role = "agent"
+        key_label = "legacy"
     else:
         tenant_key = db.scalar(select(TenantKey).where(TenantKey.key_hash == key_hash))
         if not tenant_key:
@@ -47,9 +48,11 @@ def current_tenant(
         if not tenant:
             raise HTTPException(401, "invalid API key")
         role = tenant_key.role
+        key_label = tenant_key.label
     tenant_id_var.set(tenant.id)
     request.state.tenant_id = tenant.id  # sync deps run in a thread copy of the context
     request.state.role = role
+    request.state.key_label = key_label
     wait = request.app.state.rate_limiter.check(f"tenant:{tenant.id}")
     if wait:
         raise HTTPException(429, "rate limit exceeded", headers={"Retry-After": str(int(wait) + 1)})

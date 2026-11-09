@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session
 
 from aip.audit import audit
 from aip.graph.authority import Authority
-from aip.graph.build import build_graph, postgres_checkpointer, run_case
+from aip.graph.build import build_graph, postgres_checkpointer, resume_case, run_case
 from aip.graph.nodes import NodeDeps
 from aip.graph.state import CaseState, Ticket
 from aip.models import Case, Tenant
@@ -165,6 +165,36 @@ class CaseService:
         upsert_case(db, result)
         db.commit()
         return result
+
+    def decide(
+        self,
+        db: Session,
+        tenant: Tenant,
+        thread_id: str,
+        decision: Literal["approve", "reject"],
+        actor: str,
+        reason: str = "",
+    ) -> CaseState:
+        """Resume a paused case with a team lead decision. The caller checks the role and the status."""
+        graph = build_graph(self._deps(db), self._checkpointer())
+        result = resume_case(graph, thread_id, {"decision": decision, "actor": actor, "reason": reason})
+        upsert_case(db, result)
+        audit(
+            db,
+            tenant.id,
+            "case.approved" if decision == "approve" else "case.rejected",
+            thread_id=thread_id,
+            actor=actor,
+            reason=reason,
+        )
+        db.commit()
+        return result
+
+    def list_cases(self, db: Session, tenant: Tenant, status: str | None = None) -> list[Case]:
+        query = select(Case).where(Case.tenant_id == tenant.id).order_by(Case.id)
+        if status:
+            query = query.where(Case.status == status)
+        return list(db.scalars(query))
 
     def get(self, db: Session, tenant: Tenant, thread_id: str) -> Case | None:
         return db.scalar(select(Case).where(Case.thread_id == thread_id, Case.tenant_id == tenant.id))
