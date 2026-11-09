@@ -5,6 +5,9 @@ import json
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Any
+
+from sqlalchemy.engine import make_url
 
 from aip.config import Settings
 from aip.db import install_audit_triggers, make_engine, make_session_factory
@@ -16,6 +19,53 @@ from aip.models import Tenant
 from aip.providers import build_chat_provider, build_embedder
 from aip.providers.pricing import load_prices
 from aip.tenants import ALL_TOOLS, create_tenant
+
+
+def _retrieval_command(args: argparse.Namespace) -> int:
+    from aip.evals.retrieval import ingest_corpus, prepare_database, run_retrieval_eval
+    from aip.providers.fake import FakeProvider
+    from aip.rag.service import build_retriever
+    from aip.tenants import create_tenant
+
+    engine = make_engine(args.db_url)
+    prepare_database(engine, args.db_url)
+    embedder: Any
+    if args.embedder == "local_onnx":
+        from aip.providers.local_onnx import LocalOnnxEmbedder
+
+        embedder = LocalOnnxEmbedder()
+    else:
+        embedder = FakeProvider()
+    try:
+        with make_session_factory(engine)() as db:
+            tenant, _ = create_tenant(db, "retrieval-eval", ["search_knowledge_base"])
+            db.commit()
+            ingest_corpus(db, tenant.id, embedder, Path(args.corpus))
+            retriever = build_retriever(db, args.retriever, args.rrf_k)
+            report = run_retrieval_eval(
+                Path(args.golden),
+                Path(args.corpus),
+                db,
+                tenant.id,
+                embedder,
+                retriever,
+                [m for m in args.modes.split(",") if m],
+                args.k,
+            )
+    finally:
+        engine.dispose()
+    report["config"] = {
+        "embedder": args.embedder,
+        "retriever": type(retriever).__name__,
+        "rrf_k": args.rrf_k,
+        "db": make_url(args.db_url).get_backend_name(),
+    }
+    if args.json:
+        print(json.dumps(report, indent=2))
+    else:
+        for mode, row in report["modes"].items():
+            print(mode, row)
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -64,6 +114,16 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--prompt-version", default=None)
     r.add_argument("--out", default="evals/results/latest.json")
     r.add_argument("--min-pass-rate", type=float, default=0.0)
+    rt = esub.add_parser("retrieval", help="recall, MRR and latency per search mode")
+    rt.add_argument("--modes", default="vector,keyword,hybrid")
+    rt.add_argument("--k", type=int, default=5)
+    rt.add_argument("--db-url", default="sqlite://")
+    rt.add_argument("--embedder", choices=["fake", "local_onnx"], default="fake")
+    rt.add_argument("--rrf-k", type=int, default=60)
+    rt.add_argument("--retriever", choices=["auto", "cosine", "pg"], default="auto")
+    rt.add_argument("--golden", default="evals/retrieval/golden.yaml")
+    rt.add_argument("--corpus", default="evals/retrieval/corpus")
+    rt.add_argument("--json", action="store_true")
     rep = esub.add_parser("report")
     rep.add_argument("file", nargs="?", default="evals/results/latest.json")
 
@@ -165,6 +225,8 @@ def main(argv: list[str] | None = None) -> int:
 
     from aip.evals.runner import format_report, run_evals
 
+    if args.eval_cmd == "retrieval":
+        return _retrieval_command(args)
     if args.eval_cmd == "run":
         if args.suite == "cases":
             from aip.evals.cases import format_case_report, run_case_suite
