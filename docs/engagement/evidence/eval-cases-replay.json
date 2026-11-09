@@ -1,5 +1,6 @@
 {
   "suite": "cases",
+  "eval_set_sha256": "b90e02151d8d0b16a3f1c36f439ddd8a3ccc2125cd64c5d8d5d877c4b785abd7",
   "prompt_version": "case-graph",
   "provider": "replay",
   "total": 62,

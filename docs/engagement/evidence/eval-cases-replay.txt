@@ -1,11 +1,11 @@
 # Evidence: Case evals in replay mode: 62 cases, gate 0.95
 label: VERIFIED LOCALLY
-date: 2026-11-09 07:42 UTC
-code commit: 368b576babb691d76456fb3e88f2898c6c8fa150
+date: 2026-11-09 08:58 UTC
+code commit: 67a80dbf958514defe2de0af3a0e330b42cc0254
 working tree clean at run time: yes
 machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
 command: .venv/bin/aip eval run --suite cases --replay --min-pass-rate 0.95
-notes: Replay of synthetic cassettes made by the fake provider. Proves graph routing, guards and the gate. Does not prove hosted model quality.
+notes: Replay of synthetic cassettes made by the fake provider. Proves graph routing, guards and the gate. Does not prove hosted model quality. The JSON file next to it now carries the eval set hash.
 ---
 Case eval report  provider=replay
   [PASS] answer-refund-01
