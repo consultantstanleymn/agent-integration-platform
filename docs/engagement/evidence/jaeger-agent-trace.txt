@@ -1,0 +1,28 @@
+# Evidence: One case run and its approval as a trace in Jaeger
+label: VERIFIED LOCALLY
+date: 2026-11-09 11:18 UTC
+code commit: 79ac102139de813a96ca2dc1bf72696c08fdb013
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: scripts/trace_case.sh docs/engagement/evidence/jaeger-agent-trace.json
+notes: API on port 25100 with OTLP HTTP export to Jaeger all-in-one 1.66.0 (port 25118). The file jaeger-agent-trace.json is the Jaeger API answer for the trace id. No screenshot was taken.
+---
+Trace of one case run and its approval, read from Jaeger 1.66.0 (UI port 25186).
+Both requests carried one traceparent, so they share one trace id.
+
+ start ms  duration ms  span
+      0.0         29.7  POST /v1/cases
+     13.9          0.4  graph.node.classify
+     14.0          0.2  chat fake  [gen_ai.system=fake model=unknown input_tokens=54 output_tokens=6]
+     16.3          3.0  graph.node.retrieve
+     20.1          0.6  graph.node.propose
+     20.2          0.4  chat fake  [gen_ai.system=fake model=unknown input_tokens=129 output_tokens=33]
+     22.2          0.1  graph.node.check_authority
+     23.3          0.2  graph.node.human_approval
+     39.3         30.9  POST /v1/cases/{thread_id}/decision
+     56.8          0.2  graph.node.human_approval
+     58.4          5.1  graph.node.act
+     58.5          4.8  mcp.tool.create_return_authorization
+     64.3          2.5  graph.node.record
+
+13 spans in one trace. No span has an error status. No exception text is exported.

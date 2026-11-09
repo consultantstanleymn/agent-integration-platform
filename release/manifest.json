@@ -2,13 +2,13 @@
   "alembic_head": "0006",
   "cassettes_sha256": "52f5aeec91aefdd384b76767345bee0c5fe1a1f4702b1c969ce475db8a7dc89e",
   "config_hash": "19d592925c9bd7e767ae871838a822074e4f7b7bc90d8a33d06680e1a72b6233",
-  "created_at": "2026-11-09T09:48:51Z",
+  "created_at": "2026-11-09T11:17:58Z",
   "eval_set_sha256": {
     "cases": "b90e02151d8d0b16a3f1c36f439ddd8a3ccc2125cd64c5d8d5d877c4b785abd7",
     "testset": "5a92089c9697fded4267527d906693429a67cca8e9cebad95d6731966986d7b9"
   },
-  "git_sha": "e3a7956090ff63361c2457ef34ec0a92ede35fe2",
-  "image": "localhost/agent-integration-platform@sha256:5a365aa2e3821975f05481ff8abd1ec2848d5ac37df5bca791b5b9b883182848",
+  "git_sha": "79ac102139de813a96ca2dc1bf72696c08fdb013",
+  "image": "localhost/agent-integration-platform@sha256:59e02f049bdd9030ead46574d2c6808178d14c5a4d210d6bd7f485eb71955d9a",
   "prompt_sha256": "340aa3de4322404cb6627375d25229838e9784147d736c2644bb20e03d7d383e",
   "prompt_version": "triage_v1"
 }

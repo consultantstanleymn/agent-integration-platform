@@ -1,0 +1,46 @@
+# Evidence: Full gate: lint, types, 304 tests with coverage and PostgreSQL, evals
+label: VERIFIED LOCALLY
+date: 2026-11-09 11:19 UTC
+code commit: 79ac102139de813a96ca2dc1bf72696c08fdb013
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: ruff check .; ruff format --check .; mypy; scripts/pg-test.sh start; AIP_TEST_PG_URL=$(scripts/pg-test.sh url) pytest --cov --cov-fail-under=85; aip eval run --min-pass-rate 0.9; aip eval run --suite cases --replay --min-pass-rate 0.95
+notes: Python 3.14.7 with PostgreSQL 16.10 and pgvector 0.8.0 in a local container. 304 passed, 0 skipped, coverage 94.16 percent (limit 85). The suite also passed under Python 3.12.16 earlier on the SQLite path (290 passed, 9 skipped). CI uses Python 3.12 and has not run.
+---
+All checks passed!
+191 files already formatted
+Success: no issues found in 65 source files
+src/aip/ports/queue.py                   45      1    98%
+src/aip/ports/secrets.py                 10      0   100%
+src/aip/providers/__init__.py            43      6    86%
+src/aip/providers/anthropic.py           51      2    96%
+src/aip/providers/base.py                21      0   100%
+src/aip/providers/cache.py               36      0   100%
+src/aip/providers/fake.py               114      3    97%
+src/aip/providers/local_onnx.py          20      2    90%
+src/aip/providers/openai_compat.py       51      2    96%
+src/aip/providers/pricing.py             14      0   100%
+src/aip/providers/replay.py              51      3    94%
+src/aip/providers/resilience.py          58      1    98%
+src/aip/providers/resilient.py           38      1    97%
+src/aip/rag/__init__.py                   0      0   100%
+src/aip/rag/chunking.py                  29      1    97%
+src/aip/rag/extract.py                   10      0   100%
+src/aip/rag/pg_hybrid.py                 69      1    99%
+src/aip/rag/qdrant_store.py              72      2    97%
+src/aip/rag/retriever.py                 80      1    99%
+src/aip/rag/service.py                   40      3    92%
+src/aip/rag/store.py                     25      0   100%
+src/aip/redaction.py                      8      0   100%
+src/aip/security.py                      41      0   100%
+src/aip/tenants.py                       11      0   100%
+src/aip/tickets.py                       10      0   100%
+src/aip/worker.py                        31      0   100%
+---------------------------------------------------------
+TOTAL                                  3132    183    94%
+Required test coverage of 85% reached. Total coverage: 94.16%
+304 passed in 38.44s
+  [PASS] unknown-topic
+Pass rate: 9/9 = 100.0%
+Pass rate: 62/62 = 100.0%
+rc=0
