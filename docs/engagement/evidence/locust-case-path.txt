@@ -1,0 +1,35 @@
+# Evidence: Locust run of the case path: numbers behind locust-case-path.html
+label: VERIFIED LOCALLY
+date: 2026-11-09 10:00 UTC
+code commit: 43cd43632836270b8183fffe5f9085e9dcc44f7b
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: LOCUST=<locust path> scripts/locust_run.sh
+notes: 20 users, spawn rate 2 per second, 2 minutes, API with 2 uvicorn workers, PostgreSQL 16 container, LLM_PROVIDER=fake_slow with a fixed 200 ms per model call. The code commit above differs from the final commit only in scripts/trace_case.sh. Measured on one laptop. The file locust-case-path.html is a static page built from the Locust CSV files, because the built-in Locust report is a minified bundle that the banned-word scan flags.
+---
+load average at start: 1.48 1.18 1.91
+Type     Name                                                                          # reqs      # fails |    Avg     Min     Max    Med |   req/s  failures/s
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+POST     POST /v1/cases large                                                             181     0(0.00%) |   1469     515    3036   1500 |    1.51        0.00
+POST     POST /v1/cases small                                                             542     0(0.00%) |   1741     542    3519   1900 |    4.53        0.00
+POST     POST /v2/search                                                                  356     0(0.00%) |     11       7     120     10 |    2.97        0.00
+--------|----------------------------------------------------------------------------|-------|-------------|-------|-------|-------|-------|--------|-----------
+         Aggregated                                                                      1079     0(0.00%) |   1125       7    3519    770 |    9.01        0.00
+
+Response time percentiles (approximated)
+Type     Name                                                                                  50%    66%    75%    80%    90%    95%    98%    99%  99.9% 99.99%   100% # reqs
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+POST     POST /v1/cases large                                                                 1500   1900   2100   2200   2500   2600   2800   3000   3000   3000   3000    181
+POST     POST /v1/cases small                                                                 1900   2300   2500   2600   2800   2900   3200   3300   3500   3500   3500    542
+POST     POST /v2/search                                                                        10     11     12     12     17     26     30     36    120    120    120    356
+--------|--------------------------------------------------------------------------------|--------|------|------|------|------|------|------|------|------|------|------|------
+         Aggregated                                                                            770   1700   2100   2300   2600   2900   3100   3200   3400   3500   3500   1079
+
+load average at end: 1.47 1.27 1.84
+--- aggregated csv
+Type,Name,Request Count,Failure Count,Median Response Time,Average Response Time,Min Response Time,Max Response Time,Average Content Size,Requests/s,Failures/s,50%,66%,75%,80%,90%,95%,98%,99%,99.9%,99.99%,100%
+POST,POST /v1/cases large,179,0,1500,1478.3979435919591,515.4959100000269,3036.6362319982727,259.0,1.5040935721579696,0.0,1500,1900,2100,2200,2500,2600,2800,3000,3000,3000,3000
+POST,POST /v1/cases small,541,0,1900,1743.2046714879953,542.7395549995708,3519.404509999731,255.8003696857671,4.545891746019339,0.0,1900,2300,2500,2600,2800,2900,3200,3300,3500,3500,3500
+POST,POST /v2/search,354,0,10,11.888369398306589,7.800483999744756,120.752924001863,1067.9632768361582,2.97457611477051,0.0,10,11,12,12,17,26,30,36,120,120,120
+,Aggregated,1074,0,770,1128.4128882169152,7.800483999744756,3519.404509999731,524.0297951582868,9.024561432947818,0.0,770,1700,2100,2300,2600,2900,3100,3200,3400,3500,3500
+rc=0
