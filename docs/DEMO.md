@@ -208,3 +208,25 @@ model. To compare prompts on a real model, run `aip eval run --prompt-version tr
 ## What was not shown
 
 Real LLM calls, the Docker stack end to end, and the AWS deployment. See README "Limits".
+
+
+## Case run with a team lead approval (OutdoorCo)
+
+This demo shows the case graph: a small refund that finishes by itself, a large refund that waits for a team lead, the one write tool, a refusal, and the audit trail. It uses the fake model, a fresh SQLite database and port 25100.
+
+```bash
+scripts/demo_case.sh
+```
+
+The script runs these steps with curl. Read `scripts/demo_case.sh` for the exact commands.
+
+1. Create a tenant (`POST /admin/tenants`) and a team lead key (`POST /admin/tenants/{id}/keys`).
+2. Load a public document and a `team_lead` document (`POST /v1/documents`, field `access_label`).
+3. Search with `POST /v2/search` as the agent and as the team lead. Only the team lead sees the second document.
+4. Post a small refund (`POST /v1/cases`). It ends `completed` with no person.
+5. Post a large refund. It ends `awaiting_approval`. An agent key gets 403 on `POST /v1/cases/{thread_id}/decision`.
+6. The team lead approves. The case ends `completed` and holds a return authorization number. A second decision gets 409.
+7. Post a ticket that says "ignore previous instructions". The case ends `refused`.
+8. Read the audit actions with `GET /v1/audit`.
+
+The real output of one run is in `docs/engagement/evidence/demo-transcript.txt`.
