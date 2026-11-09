@@ -1,0 +1,290 @@
+labels_reviewed_by: pending owner review
+queries:
+  - id: q01
+    query: "TNT-4421 warranty length"
+    role: agent
+    relevant: ["warranty.md#Covered models"]
+    kind: keyword
+    note: "exact product code"
+  - id: q02
+    query: "STV-77 restocking fee"
+    role: agent
+    relevant: ["returns.md#Restocking fee rules"]
+    kind: keyword
+    note: "product code and exact term"
+  - id: q03
+    query: "RMA number on the outside of the box"
+    role: agent
+    relevant: ["returns.md#Return shipping and RMA"]
+    kind: keyword
+    note: "exact term RMA"
+  - id: q04
+    query: "write damaged on arrival on the waybill"
+    role: agent
+    relevant: ["shipping-damage.md#Waybill inspection"]
+    kind: keyword
+    note: "exact phrase"
+  - id: q05
+    query: "FLT-3"
+    role: agent
+    relevant: ["warranty.md#Covered models", "returns.md#Restocking fee rules", "repair-service.md#Items not accepted for repair"]
+    kind: keyword
+    note: "bare product code appears in three sections"
+  - id: q06
+    query: "chargeback notice forward to finance team"
+    role: agent
+    relevant: ["escalation-matrix.md#Chargeback escalation path"]
+    kind: keyword
+    note: "exact term chargeback"
+  - id: q07
+    query: "gift receipt"
+    role: agent
+    relevant: ["store-credit.md#Gift receipt returns", "holiday-returns.md#Gift receipt holiday return handling"]
+    kind: keyword
+    note: "exact term in two files"
+  - id: q08
+    query: "price match exclusions auction sites"
+    role: agent
+    relevant: ["price-adjustment.md#Price match exclusions"]
+    kind: keyword
+    note: "exact term price match"
+  - id: q09
+    query: "How long can I send back a tent after it arrives?"
+    role: agent
+    relevant: ["returns.md#Return window"]
+    kind: paraphrase
+    note: "no shared heading words"
+  - id: q10
+    query: "What happens if a parcel shows up crushed?"
+    role: agent
+    relevant: ["shipping-damage.md#Damage reporting window", "shipping-damage.md#Photo evidence requirements"]
+    kind: paraphrase
+    note: "paraphrase of damage"
+  - id: q11
+    query: "Can I spend leftover money on my account towards a new order?"
+    role: agent
+    relevant: ["store-credit.md#Store credit balance and use"]
+    kind: paraphrase
+    note: "paraphrase of store credit"
+  - id: q12
+    query: "What do I owe if I bring rented gear back after the due date?"
+    role: agent
+    relevant: ["rental-gear.md#Late return rental fees"]
+    kind: paraphrase
+    note: "paraphrase of late fee"
+  - id: q13
+    query: "I saw a cheaper price a week after I bought. Can I get the difference?"
+    role: agent
+    relevant: ["price-adjustment.md#Price adjustment request window"]
+    kind: paraphrase
+    note: "paraphrase of price adjustment"
+  - id: q14
+    query: "How many months of no activity until my reward points vanish?"
+    role: agent
+    relevant: ["loyalty-points.md#Loyalty point expiration rules"]
+    kind: paraphrase
+    note: "paraphrase of expiry"
+  - id: q15
+    query: "If I buy a set together and one piece is faulty, can I send back only that piece?"
+    role: agent
+    relevant: ["bundle-returns.md#Partial bundle replacement"]
+    kind: paraphrase
+    note: "paraphrase of bundle"
+  - id: q16
+    query: "My overseas order cost extra at the border. Do I get that money back?"
+    role: agent
+    relevant: ["international-returns.md#Duties and taxes"]
+    kind: paraphrase
+    note: "paraphrase of duties"
+  - id: q17
+    query: "How much can a team lead refund without escalation?"
+    role: team_lead
+    relevant: ["team-lead-refund-guide.md#Refund authority limits"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q18
+    query: "signals that an order may be fraud: address is a freight forwarder"
+    role: team_lead
+    relevant: ["fraud-signals.md#Shipping and address signals"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q19
+    query: "when may a team lead void an order before shipment"
+    role: team_lead
+    relevant: ["fraud-signals.md#What team leads may void"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q20
+    query: "how long can a team lead hold a refund for review"
+    role: team_lead
+    relevant: ["team-lead-refund-guide.md#Team lead hold and release"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q21
+    query: "emergency refund for a customer who needs gear for a trip"
+    role: team_lead
+    relevant: ["team-lead-refund-guide.md#Emergency refund procedure"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q22
+    query: "how to document a refund exception"
+    role: team_lead
+    relevant: ["team-lead-refund-guide.md#Refund exception documentation"]
+    kind: team_lead
+    note: "team lead only"
+  - id: q23
+    query: "hotel booking for a camping trip"
+    role: agent
+    relevant: []
+    kind: none
+    note: "not in the corpus"
+  - id: q24
+    query: "current share price of the company"
+    role: agent
+    relevant: []
+    kind: none
+    note: "not in the corpus"
+  - id: q25
+    query: "recipe for trail mix"
+    role: agent
+    relevant: []
+    kind: none
+    note: "not in the corpus"
+  - id: q26
+    query: "how do I reset my email password"
+    role: agent
+    relevant: []
+    kind: none
+    note: "not in the corpus"
+  - id: q27
+    query: "What is the return window for international customers?"
+    role: agent
+    relevant: ["international-returns.md#International return window"]
+    kind: plain
+    note: "plain question"
+  - id: q28
+    query: "Is there a restocking fee during the holiday return period?"
+    role: agent
+    relevant: ["holiday-returns.md#Holiday restocking fee waiver"]
+    kind: plain
+    note: "plain question"
+  - id: q29
+    query: "How long does a refund take after the warehouse gets the item?"
+    role: agent
+    relevant: ["returns.md#Refund timing"]
+    kind: plain
+    note: "plain question"
+  - id: q30
+    query: "When does store credit expire?"
+    role: agent
+    relevant: ["store-credit.md#Store credit expiry and fees"]
+    kind: plain
+    note: "plain question"
+  - id: q31
+    query: "How much does the damage waiver cost for a rental?"
+    role: agent
+    relevant: ["rental-gear.md#Damage waiver coverage"]
+    kind: plain
+    note: "plain question"
+  - id: q32
+    query: "How big is the rental deposit hold?"
+    role: agent
+    relevant: ["rental-gear.md#Rental deposit authorization holds"]
+    kind: plain
+    note: "plain question"
+  - id: q33
+    query: "How many loyalty points do members earn per dollar?"
+    role: agent
+    relevant: ["loyalty-points.md#Earning loyalty points on qualifying purchases"]
+    kind: plain
+    note: "plain question"
+  - id: q34
+    query: "What amounts can a gift card have?"
+    role: agent
+    relevant: ["gift-cards.md#Gift card purchase options"]
+    kind: plain
+    note: "plain question"
+  - id: q35
+    query: "Can a lost gift card be replaced?"
+    role: agent
+    relevant: ["gift-cards.md#Lost or stolen gift cards"]
+    kind: plain
+    note: "plain question"
+  - id: q36
+    query: "What is the diagnostic fee for a repair?"
+    role: agent
+    relevant: ["repair-service.md#Diagnostic fee and approval rules"]
+    kind: plain
+    note: "plain question"
+  - id: q37
+    query: "How long does a repair take?"
+    role: agent
+    relevant: ["repair-service.md#Repair lead time and parts"]
+    kind: plain
+    note: "plain question"
+  - id: q38
+    query: "What does the warranty exclude?"
+    role: agent
+    relevant: ["warranty.md#Warranty exclusions"]
+    kind: plain
+    note: "plain question"
+  - id: q39
+    query: "How does a customer report a warranty defect?"
+    role: agent
+    relevant: ["warranty.md#Defect claims"]
+    kind: plain
+    note: "plain question"
+  - id: q40
+    query: "What refund can an agent approve alone?"
+    role: agent
+    relevant: ["escalation-matrix.md#Tier one refund and replacement limit"]
+    kind: plain
+    note: "plain question"
+  - id: q41
+    query: "What must be escalated after a fire or injury report?"
+    role: agent
+    relevant: ["escalation-matrix.md#Emergency field safety path"]
+    kind: plain
+    note: "plain question"
+  - id: q42
+    query: "How fast is a replacement shipped after damage is approved?"
+    role: agent
+    relevant: ["shipping-damage.md#Replacement shipment"]
+    kind: plain
+    note: "plain question"
+  - id: q43
+    query: "How many days to report missing items from a delivery?"
+    role: agent
+    relevant: ["shipping-damage.md#Missing items and carrier notes"]
+    kind: plain
+    note: "plain question"
+  - id: q44
+    query: "What is deducted when a bundle component is missing?"
+    role: agent
+    relevant: ["bundle-returns.md#Missing bundle component deductions"]
+    kind: plain
+    note: "plain question"
+  - id: q45
+    query: "How do price adjustments affect loyalty points?"
+    role: agent
+    relevant: ["price-adjustment.md#Price adjustment and loyalty points"]
+    kind: plain
+    note: "plain question"
+  - id: q46
+    query: "Which exchange rate is used for international refunds?"
+    role: agent
+    relevant: ["international-returns.md#Currency and refund exchange rate"]
+    kind: plain
+    note: "plain question"
+  - id: q47
+    query: "What can a gift card not be used to buy?"
+    role: agent
+    relevant: ["gift-cards.md#Gift card exclusions"]
+    kind: plain
+    note: "plain question"
+  - id: q48
+    query: "What is the longest rental period?"
+    role: agent
+    relevant: ["rental-gear.md#Rental gear exclusions and maximum period"]
+    kind: plain
+    note: "plain question"
