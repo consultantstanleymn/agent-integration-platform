@@ -1,0 +1,42 @@
+# Evidence: Security gate commands run locally
+label: PARTLY RUN
+date: 2026-11-09 07:49 UTC
+code commit: 4278c31bbb49b75268832d7f12d77cfec360c05b
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: see each command line below (run from the repo root)
+notes: Gitleaks, Bandit, Semgrep, pip-audit, SBOM, actionlint and the exceptions check ran. CodeQL and the image scan did not run.
+---
+
+## gitleaks git --config .gitleaks.toml --redact --no-banner --exit-code 1 .
+[90m2:49AM[0m [32mINF[0m [1m46 commits scanned.[0m
+[90m2:49AM[0m [32mINF[0m [1mscanned ~434365 bytes (434.36 KB) in 174ms[0m
+[90m2:49AM[0m [32mINF[0m [1mno leaks found[0m
+exit code: 0
+
+## gitleaks dir --config .gitleaks.toml --redact --no-banner .
+[90m2:49AM[0m [32mINF[0m [1mscanned ~1260597 bytes (1.26 MB) in 396ms[0m
+[90m2:49AM[0m [32mINF[0m [1mno leaks found[0m
+exit code: 0
+
+## $TV/bin/bandit -r src -ll -q
+exit code: 0
+
+## $TV/bin/semgrep --config .semgrep.yml --metrics=off --error --quiet src
+exit code: 0
+
+## $TV/bin/pip-audit -r /tmp/req.txt --no-deps --disable-pip
+WARNING:pip_audit._cli:--no-deps is supported, but users are encouraged to fully hash their pinned dependencies
+WARNING:pip_audit._cli:Consider using a tool like `pip-compile`: https://pip-tools.readthedocs.io/en/latest/#using-hashes
+No known vulnerabilities found
+exit code: 0
+
+## trivy fs --format cyclonedx --output docs/engagement/evidence/sbom-source.cdx.json --quiet /tmp/sbomsrc
+exit code: 0
+
+## actionlint .github/workflows/security.yml
+exit code: 0
+
+## python3 scripts/check_security_exceptions.py security/exceptions.json
+ok: security/exceptions.json
+exit code: 0
