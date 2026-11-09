@@ -74,3 +74,8 @@ no_implicit_optional = true
 [[tool.mypy.overrides]]
 module = ["boto3", "boto3.*", "botocore", "botocore.*"]
 ignore_missing_imports = true
+
+# Optional extras (local-embed, qdrant). The dev install does not include them.
+[[tool.mypy.overrides]]
+module = ["fastembed", "fastembed.*", "qdrant_client", "qdrant_client.*"]
+ignore_missing_imports = true

@@ -28,6 +28,8 @@ All numbers were measured on one laptop (MacBook Pro mid 2015, 8 logical CPUs, 1
 
 The page `docs/engagement/evidence/locust-case-path.html` shows the same numbers with charts over time. It is built from the Locust CSV files, because the built-in Locust HTML report is a minified bundle that the banned-word scan flags. The text copy with the command and the header is `docs/engagement/evidence/locust-case-path.txt`.
 
+The table above uses the final console summary (1 079 requests). The CSV files, and so the HTML page, hold 1 074 requests. The probable cause is that Locust wrote the CSV files a moment before its final count. This cause was not checked. The difference is 5 requests and changes no percentile in the table.
+
 ## What happened before this run
 
 The first run showed every case request hanging until the database stopped. The cause was the checkpoint setup: each worker and each request thread ran the setup statements at the same time. The fix opens the checkpointer once under a lock, takes a PostgreSQL advisory lock for the setup, and opens the checkpointer at startup. A second run with 12 parallel case requests finished in about 2.2 seconds each. The run above used the fixed code. The failed first run is not part of the numbers.

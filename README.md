@@ -49,7 +49,7 @@ Dates are 2026-11-09. Every command was run on one laptop (MacBook Pro mid 2015,
 | Release manifest with a local image digest, a CycloneDX SBOM and the acceptance gate | `podman build`, `scripts/release_manifest.py`, `scripts/acceptance_gate.py` | `release-local-build.txt`, `release/manifest.json` |
 | Security checks (Gitleaks, Bandit, Semgrep, pip-audit, image scan, SBOM) | see `docs/engagement/SECURITY-GATE.md` | `security-gate-local.txt` |
 | Migration 0006 up and down on PostgreSQL with pgvector | `pytest -m pg` | `migration-0006-up-down.txt`, `pg-hybrid-tests.txt` |
-| Hybrid retrieval on 48 labelled queries: recall@5 0.9659, MRR 0.8557, p50 3.0 ms (measured on one laptop) | `aip eval retrieval --db-url <pg> --embedder local_onnx` | `retrieval-report.md` |
+| Hybrid retrieval on 48 labelled queries: recall@5 0.9659, MRR 0.8557, p50 3.0 ms (measured on one laptop; labels pending owner review) | `aip eval retrieval --db-url <pg> --embedder local_onnx` | `retrieval-report.md` |
 | Qdrant and pgvector tie in vector mode (recall@5 0.9583) | `aip eval retrieval --store qdrant` | `qdrant-vs-pgvector.md` |
 | Local ONNX embedder, 384 dimensions | `pytest tests/test_local_onnx_embedder.py` | `local-embedder-check.txt` |
 | One Jaeger trace of a case run with GenAI attributes | `scripts/trace_case.sh` | `jaeger-agent-trace.json`, `jaeger-agent-trace.txt` |

@@ -1,6 +1,6 @@
 # Acceptance criteria
 
-Status starts at `not started` for every row. The evidence file is the artifact that proves the row.
+Each row started at `not started` before the code was written. The status column shows the current state. The evidence file is the artifact that proves the row.
 
 | ID | Criterion | Measurable check | Proof | Evidence file | Status |
 |---|---|---|---|---|---|
@@ -27,5 +27,5 @@ Status starts at `not started` for every row. The evidence file is the artifact 
 | A-C4 | A cost budget with an alert is defined in HCL. A teardown script deletes every resource. A second verifier run finds nothing left. | teardown plus verifier `--expect-empty` pass against moto server; HCL syntax-checked | `docs/engagement/evidence/aws-teardown-moto.txt` | `docs/engagement/evidence/aws-teardown-moto.txt` (moto only); `docs/engagement/evidence/aws-hcl-static-checks.txt` (the HCL is authored, not run) | met locally (moto only) |
 | A-C5 | The hosted LLM adapter runs end to end against a mocked HTTP server. Token use and cost are recorded per run. Real hosted call: authored, not run. | test passes, cost fields present | `tests/test_hosted_llm_cost.py` | `tests/test_hosted_llm_cost.py` | met locally (mocked HTTP) |
 | A-O1 | Spans go to an OTel collector and Jaeger with GenAI attributes (model, input and output tokens). | in-memory exporter test; one local Jaeger run | `tests/test_otel.py`, `docs/engagement/evidence/jaeger-agent-trace.json` | `docs/engagement/evidence/jaeger-agent-trace.json`, `docs/engagement/evidence/jaeger-agent-trace.txt` | met locally |
-| A-O2 | A Locust test of the case path with a slow fake provider. | Locust HTML report committed | `docs/engagement/evidence/locust-case-path.html` | `docs/engagement/evidence/locust-case-path.html`, `docs/engagement/LOADTEST.md` | met locally |
+| A-O2 | A Locust test of the case path with a slow fake provider. | Locust HTML report committed | `docs/engagement/evidence/locust-case-path.html` | `docs/engagement/evidence/locust-case-path.html` (a static page built from the Locust CSV files, not the built-in Locust report), `docs/engagement/evidence/locust-case-path.txt`, `docs/engagement/LOADTEST.md` | met locally |
 | A-O3 | Redis holds the shared rate limit and a query-embedding cache with a hit-ratio metric. | fakeredis tests; one run on local Redis | `tests/test_redis_limiter.py`, `tests/test_embed_cache.py` | `tests/test_redis_limiter.py`, `tests/test_embed_cache.py`, `docs/engagement/evidence/embed-cache-hit-ratio.txt` | met locally |
