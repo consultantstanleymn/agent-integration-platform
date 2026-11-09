@@ -15,6 +15,7 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.trace import Status, StatusCode
 from prometheus_client import Counter, Histogram
 
 request_id_var: ContextVar[str] = ContextVar("request_id", default="")
@@ -147,10 +148,17 @@ def span(name: str, **attrs: Any) -> Iterator[trace.Span]:
     """Open an OpenTelemetry span and also log its name and duration."""
     span_id = secrets.token_hex(8)
     start = time.perf_counter()
-    with _tracer.start_as_current_span(name) as sp:
+    with _tracer.start_as_current_span(name, record_exception=False, set_status_on_exception=False) as sp:
         _set_attrs(sp, attrs)
         try:
             yield sp
+        except BaseException as exc:
+            # Exception messages can hold ticket data, so record only the type.
+            # A graph interrupt is a pause, not an error.
+            if type(exc).__name__ != "GraphInterrupt":
+                sp.set_attribute("error.type", type(exc).__name__)
+                sp.set_status(Status(StatusCode.ERROR))
+            raise
         finally:
             ms = round((time.perf_counter() - start) * 1000, 2)
             logging.getLogger("aip.trace").info(

@@ -106,3 +106,25 @@ def test_no_ticket_text_in_span_attributes(traced):
                 and "ORD-4242" not in text
                 and "refund $150" not in text
             )
+
+
+def test_interrupt_span_has_no_proposal_data_and_no_error(traced):
+    _case(traced)
+    spans = [s for s in traced.exporter.get_finished_spans() if s.name == "graph.node.human_approval"]
+    assert spans
+    span = spans[0]
+    assert span.status.status_code.name != "ERROR"
+    assert not span.events  # no recorded exception, so the proposal text is not exported
+    assert "ORD-4242" not in str(dict(span.attributes or {}))
+
+
+def test_failing_span_records_only_the_error_type(traced):
+    from aip.observability import span
+
+    traced.exporter.clear()
+    with pytest.raises(ValueError), span("demo.fail"):
+        raise ValueError("secret ticket text ORD-4242")
+    [done] = [s for s in traced.exporter.get_finished_spans() if s.name == "demo.fail"]
+    assert done.status.status_code.name == "ERROR"
+    assert done.attributes["error.type"] == "ValueError"
+    assert not done.events and "ORD-4242" not in str(dict(done.attributes))
