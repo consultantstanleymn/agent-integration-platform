@@ -1,0 +1,41 @@
+# Evidence: Case run demo on a fresh SQLite database
+label: VERIFIED LOCALLY
+date: 2026-11-09 09:02 UTC
+code commit: 8ebb1532689d26bef9589893276782c98d51ee64
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: scripts/demo_case.sh
+notes: Fake model, SQLite, port 25100. Shows a small refund, a large refund with a team lead approval, 403 and 409 answers, a refusal, and the audit actions. Return authorization numbers are masked.
+---
+## 1. Create a tenant and a team lead key
+tenant id 1 created; agent key and team lead key issued (not printed)
+
+## 2. Load two policy documents (one for team leads only)
+{"name":"returns.md","chunks":1}
+{"name":"lead-guide.md","chunks":1}
+
+## 3. Search as an agent and as a team lead
+agent:
+["returns.md"]
+team lead:
+["lead-guide.md","returns.md"]
+
+## 4. A small refund finishes without a person
+{"status":"completed","needs_approval":false,"action":"refund"}
+
+## 5. A large refund waits for a team lead
+{"status":"awaiting_approval","needs_approval":true,"amount_minor":15000}
+an agent key cannot decide:
+HTTP 403
+
+## 6. The team lead approves
+{"status":"completed","ra":"RA-XXXXXXXXXXXX"}
+a second decision is refused:
+HTTP 409
+
+## 7. A request outside the written authority is refused
+{"status":"refused","needs_approval":false}
+
+## 8. Audit trail (actions only)
+case.approved, case.recorded, document.ingest, mcp.create_return_authorization, tenant.create, tenant_key.create
+exit code: 0
