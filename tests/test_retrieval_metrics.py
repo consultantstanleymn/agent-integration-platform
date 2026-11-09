@@ -98,3 +98,31 @@ def test_runner_on_tiny_corpus_sqlite(db_session, tmp_path):
     # the agent never gets the team lead file
     agent_none = report["per_query"]["keyword"][2]
     assert not any(ref.startswith("guide.md") for ref in agent_none["ranked"])
+
+
+def test_cli_retrieval_reports_embed_cache_ratio(monkeypatch, capsys):
+    import json
+    from pathlib import Path
+
+    import fakeredis
+
+    from aip.cli import main
+
+    root = Path(__file__).resolve().parents[1]
+    server = fakeredis.FakeServer()
+    monkeypatch.setattr("redis.Redis.from_url", lambda url: fakeredis.FakeRedis(server=server))
+    monkeypatch.setenv("REDIS_URL", "redis://example/0")
+    monkeypatch.setenv("EMBED_CACHE", "true")
+    monkeypatch.chdir(root)
+    from aip.providers import cache
+
+    cache.EMBED_CACHE_HITS._value.set(0)
+    cache.EMBED_CACHE_MISSES._value.set(0)
+    assert main(["eval", "retrieval", "--modes", "hybrid", "--json"]) == 0
+    first = json.loads(capsys.readouterr().out)["embed_cache"]
+    assert first["misses"] > 0
+    cache.EMBED_CACHE_HITS._value.set(0)
+    cache.EMBED_CACHE_MISSES._value.set(0)
+    assert main(["eval", "retrieval", "--modes", "hybrid", "--json"]) == 0
+    second = json.loads(capsys.readouterr().out)["embed_cache"]
+    assert second["misses"] == 0 and second["hit_ratio"] == 1.0

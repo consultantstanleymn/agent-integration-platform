@@ -42,6 +42,14 @@ def _retrieval_command(args: argparse.Namespace) -> int:
         embedder = LocalOnnxEmbedder()
     else:
         embedder = FakeProvider()
+    settings = Settings()
+    cached = bool(settings.redis_url and settings.embed_cache)
+    if cached:
+        import redis
+
+        from aip.providers.cache import CachedEmbedder
+
+        embedder = CachedEmbedder(embedder, redis.Redis.from_url(settings.redis_url), model=args.embedder)
     try:
         with make_session_factory(engine)() as db:
             tenant, _ = create_tenant(db, "retrieval-eval", ["search_knowledge_base"])
@@ -76,6 +84,15 @@ def _retrieval_command(args: argparse.Namespace) -> int:
             )
     finally:
         engine.dispose()
+    if cached:
+        from aip.providers.cache import EMBED_CACHE_HITS, EMBED_CACHE_MISSES
+
+        hits, misses = EMBED_CACHE_HITS._value.get(), EMBED_CACHE_MISSES._value.get()
+        report["embed_cache"] = {
+            "hits": hits,
+            "misses": misses,
+            "hit_ratio": round(hits / (hits + misses), 4) if hits + misses else 0.0,
+        }
     report["config"] = {
         "embedder": args.embedder,
         "store": args.store,
