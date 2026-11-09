@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from aip.models import Chunk, Document
 from aip.providers.base import Embedder
 from aip.rag.chunking import chunk_text
+from aip.rag.retriever import CosineRetriever, ScoredHit, SearchQuery
 from aip.rag.store import Hit, SqlCosineStore
 
 
@@ -25,5 +26,11 @@ def ingest_document(db: Session, tenant_id: int, embedder: Embedder, name: str, 
 
 
 def retrieve(db: Session, tenant_id: int, embedder: Embedder, query: str, k: int = 3) -> list[Hit]:
+    """Vector search over public chunks. The response shape of /v1/search does not change."""
     vec = embedder.embed([query])[0]
-    return SqlCosineStore(db).search(tenant_id, vec, k)
+    q = SearchQuery(tenant_id=tenant_id, text=query, vector=vec, k=k, mode="vector")
+    return [Hit(h.doc, h.chunk, h.score, h.text) for h in retrieve_q(db, q)]
+
+
+def retrieve_q(db: Session, q: SearchQuery) -> list[ScoredHit]:
+    return CosineRetriever(db).search(q)

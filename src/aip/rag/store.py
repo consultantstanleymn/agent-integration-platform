@@ -21,7 +21,14 @@ class Hit:
 
 
 class VectorStore(Protocol):
-    def add(self, tenant_id: int, document_id: int, texts: list[str], vectors: list[list[float]]) -> None: ...
+    def add(
+        self,
+        tenant_id: int,
+        document_id: int,
+        texts: list[str],
+        vectors: list[list[float]],
+        access_label: str = "public",
+    ) -> None: ...
 
     def search(self, tenant_id: int, vector: list[float], k: int) -> list[Hit]: ...
 
@@ -37,9 +44,25 @@ class SqlCosineStore:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    def add(self, tenant_id: int, document_id: int, texts: list[str], vectors: list[list[float]]) -> None:
+    def add(
+        self,
+        tenant_id: int,
+        document_id: int,
+        texts: list[str],
+        vectors: list[list[float]],
+        access_label: str = "public",
+    ) -> None:
         for i, (t, v) in enumerate(zip(texts, vectors, strict=True)):
-            self.db.add(Chunk(tenant_id=tenant_id, document_id=document_id, idx=i, text=t, embedding=v))
+            self.db.add(
+                Chunk(
+                    tenant_id=tenant_id,
+                    document_id=document_id,
+                    idx=i,
+                    text=t,
+                    embedding=v,
+                    access_label=access_label,
+                )
+            )
         self.db.flush()
 
     def search(self, tenant_id: int, vector: list[float], k: int) -> list[Hit]:
