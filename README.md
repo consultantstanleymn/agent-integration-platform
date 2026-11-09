@@ -130,7 +130,7 @@ Not verified: calls to real OpenAI-compatible or Anthropic endpoints (adapters t
 
 - Vector search loads a tenant's chunks and scores them in Python. Fine for thousands of chunks, not millions.
   Replace `SqlCosineStore` with pgvector behind the same interface.
-- Rate limit is in memory, per process.
+- Rate limit: a Redis limiter is available. In-memory is the default without `REDIS_URL`, and then it is per process.
 - The fake embedding is a hashed bag of words. It matches shared words, not meaning.
 - Tenant webhook secrets are stored in the database in plain text (needed to compute HMAC). Use a KMS in production.
 - No SSO, no user accounts, no admin UI. See [SECURITY.md](SECURITY.md).

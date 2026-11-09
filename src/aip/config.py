@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     prompt_version: str = "triage_v1"
     max_agent_steps: int = 5
     rate_limit_per_minute: int = 60
+    redis_url: str = ""  # set to share the rate limit and the embedding cache across processes
+    embed_cache: bool = False
     checkpoint_url: str = "sqlite:///./aip-checkpoints.sqlite"
     approval_limit_minor: int = 10000
     authority_path: str = "docs/engagement/AUTHORITY.md"

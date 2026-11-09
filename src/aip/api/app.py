@@ -35,9 +35,18 @@ from aip.ports import Ports, build_ports
 from aip.providers import build_chat_provider, build_embedder
 from aip.providers.base import ChatProvider, Embedder
 from aip.providers.pricing import load_prices
-from aip.security import RateLimiter
+from aip.security import RateLimiter, RedisRateLimiter
 
 log = logging.getLogger("aip.http")
+
+
+def build_rate_limiter(settings: Settings) -> RateLimiter | RedisRateLimiter:
+    """A shared Redis limiter when REDIS_URL is set, else the in-process limiter."""
+    if settings.redis_url:
+        import redis
+
+        return RedisRateLimiter(redis.Redis.from_url(settings.redis_url), settings.rate_limit_per_minute)
+    return RateLimiter(settings.rate_limit_per_minute)
 
 
 def create_app(
@@ -67,7 +76,7 @@ def create_app(
     app.state.embedder = embedder or build_embedder(settings)
     app.state.http = http or httpx.Client(timeout=10)
     app.state.ports = ports or build_ports(settings)
-    app.state.rate_limiter = RateLimiter(settings.rate_limit_per_minute)
+    app.state.rate_limiter = build_rate_limiter(settings)
     _authority = load_authority(settings.authority_path)
     app.state.case_service = CaseService(
         checkpoint_url=settings.checkpoint_url,

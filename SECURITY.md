@@ -14,7 +14,7 @@ or penetration test. This file lists what exists and what does not.
 | Outbound webhooks | SSRF (calling internal services) | URL validation blocks non-http(s), localhost, private IPs and names that resolve to them |
 | Agent | Prompt injection makes it misuse tools | Per-tenant tool allow-list, max steps, validated arguments, answers may cite only retrieved chunks |
 | Logs | PII in logs | Redaction of emails, phones, SSNs, card numbers, keys, bearer tokens |
-| Service | Abuse, traffic spikes | Per-tenant rate limit (in memory) |
+| Service | Abuse, traffic spikes | Per-tenant rate limit (in memory, or shared in Redis with REDIS_URL) |
 
 ## Controls list (SOC 2 style, honest status)
 
@@ -41,7 +41,7 @@ or penetration test. This file lists what exists and what does not.
 
 - **Webhook secrets in plain text** in the `tenants` table. A database leak exposes them.
 - **SSRF guard resolves names once.** A name that resolves to a private address is blocked. The HTTP client may resolve again at connect time, so DNS rebinding between the check and the call is still possible. A pinned-address transport is not built.
-- **Rate limit** is per process and in memory. Several replicas multiply the limit.
+- **Rate limit** is per process and in memory unless `REDIS_URL` is set. A Redis limiter is available. In-memory is the default without `REDIS_URL`. Without Redis, several replicas multiply the limit.
 - **Prompt injection** cannot be fully prevented. The controls limit the damage; they do not remove the risk.
 - **PII redaction** uses regular expressions. It misses names and addresses. Question text and answers are stored
   redacted, but the knowledge base itself is stored as uploaded.
