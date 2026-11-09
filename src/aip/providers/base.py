@@ -25,9 +25,15 @@ class ToolSpec(BaseModel):
     parameters: dict[str, Any]  # JSON schema
 
 
+class Usage(BaseModel):
+    input_tokens: int = 0
+    output_tokens: int = 0
+
+
 class LLMResponse(BaseModel):
     content: str = ""
     tool_calls: list[ToolCall] = Field(default_factory=list)
+    usage: Usage = Field(default_factory=Usage)
 
 
 class ChatProvider(Protocol):

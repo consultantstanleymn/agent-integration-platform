@@ -79,7 +79,7 @@ def retrieve(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
 
 def propose(state: CaseState, deps: NodeDeps) -> dict[str, Any]:
     sources = "\n\n".join(
-        f"[{item.get('doc', '')}#{item.get('chunk', '')}] {item.get('text', '')}" for item in state.retrieved
+        f"[doc:{item.get('doc', '')}#{item.get('chunk', '')}] {item.get('text', '')}" for item in state.retrieved
     )
     messages = [
         Message(role="system", content=PROPOSE_PROMPT),

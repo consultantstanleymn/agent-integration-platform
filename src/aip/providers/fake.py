@@ -10,8 +10,9 @@ import hashlib
 import json
 import math
 import re
+from decimal import Decimal
 
-from aip.providers.base import LLMResponse, Message, ToolCall, ToolSpec
+from aip.providers.base import LLMResponse, Message, ToolCall, ToolSpec, Usage
 
 DIM = 256
 MIN_SCORE = 0.15  # below this the fake says it found nothing
@@ -63,14 +64,71 @@ class FakeProvider:
 
     def chat(self, messages: list[Message], tools: list[ToolSpec]) -> LLMResponse:
         last = messages[-1]
+        system = next((m.content for m in messages if m.role == "system"), "")
+        if system.startswith("CLASSIFY"):
+            content = json.dumps({"category": self._category(self._user_text(messages))})
+            return LLMResponse(content=content, usage=self._usage(messages, content))
+        if system.startswith("PROPOSE"):
+            content = json.dumps(self._proposal(self._user_text(messages)))
+            return LLMResponse(content=content, usage=self._usage(messages, content))
         if last.role == "tool":
-            return LLMResponse(content=self._final(last))
+            content = self._final(last)
+            return LLMResponse(content=content, usage=self._usage(messages, content))
         names = {t.name for t in tools}
         text = last.content
         want, args = self._route(text)
         if want not in names:
-            return LLMResponse(content=f"I am not allowed to use the tool '{want}' here.")
-        return LLMResponse(tool_calls=[ToolCall(id="call_1", name=want, arguments=args)])
+            content = f"I am not allowed to use the tool '{want}' here."
+            return LLMResponse(content=content, usage=self._usage(messages, content))
+        return LLMResponse(
+            tool_calls=[ToolCall(id="call_1", name=want, arguments=args)],
+            usage=self._usage(messages, ""),
+        )
+
+    @staticmethod
+    def _user_text(messages: list[Message]) -> str:
+        return "\n".join(m.content for m in messages if m.role == "user")
+
+    @staticmethod
+    def _usage(messages: list[Message], content: str) -> Usage:
+        input_text = "".join(m.content for m in messages)
+        return Usage(
+            input_tokens=math.ceil(len(input_text) / 4),
+            output_tokens=math.ceil(len(content) / 4),
+        )
+
+    @staticmethod
+    def _category(text: str) -> str:
+        low = text.lower()
+        if re.search(r"\b(refund|money back)\b", low):
+            return "refund"
+        if re.search(r"\b(damaged|arrived broken)\b", low):
+            return "damage"
+        if re.search(r"\b(warranty|broken|defect)\b", low):
+            return "warranty"
+        if re.search(r"\b(delete|account|password)\b", low):
+            return "account"
+        return "other"
+
+    @staticmethod
+    def _proposal(text: str) -> dict[str, object]:
+        category = FakeProvider._category(text)
+        action = {"refund": "refund", "warranty": "replacement", "damage": "replacement"}.get(
+            category, "escalate"
+        )
+        amount = 0
+        price = re.search(r"\$([0-9]+(?:\.[0-9]{1,2})?)", text)
+        if price:
+            amount = int(round(Decimal(price.group(1)) * 100))
+        order = re.search(r"ORD-\d+", text)
+        citations = re.findall(r"(?m)^\s*\[doc:([^\]#\s]+)", text)
+        return {
+            "action": action,
+            "amount_minor": amount,
+            "order_id": order.group(0) if order else None,
+            "reason": f"{action} under policy",
+            "citations": citations,
+        }
 
     @staticmethod
     def _route(text: str) -> tuple[str, dict[str, object]]:
