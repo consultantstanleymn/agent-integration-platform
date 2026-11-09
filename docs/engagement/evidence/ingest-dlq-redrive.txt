@@ -1,0 +1,29 @@
+# Evidence: Async ingest, poison message to DLQ, redrive, no duplicate (memory queue and moto SQS)
+label: VERIFIED LOCALLY
+date: 2026-11-09 08:08 UTC
+code commit: bd5ebde34554d17aa5f6c8ccb38a721b1b22a8c7
+working tree clean at run time: yes
+machine: MacBook Pro (mid 2015), 8 logical CPUs, 16 GB RAM, Fedora 44, podman 5.8.7 (measured on one laptop)
+command: .venv/bin/pytest tests/test_ingest_queue.py -v -W ignore -o addopts=
+notes: Runs on the in-memory queue and on moto, an AWS emulator. No real AWS call.
+---
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0 -- ./.venv/bin/python
+cachedir: .pytest_cache
+rootdir: .
+configfile: pyproject.toml
+plugins: anyio-4.16.0, cov-7.1.0, langsmith-0.14.17
+collecting ... collected 9 items
+
+tests/test_ingest_queue.py::test_async_ingest_then_worker_creates_document[memory] PASSED [ 11%]
+tests/test_ingest_queue.py::test_async_ingest_then_worker_creates_document[moto] PASSED [ 22%]
+tests/test_ingest_queue.py::test_poison_message_goes_to_dlq[memory] PASSED [ 33%]
+tests/test_ingest_queue.py::test_poison_message_goes_to_dlq[moto] PASSED [ 44%]
+tests/test_ingest_queue.py::test_redrive_after_fix_ingests_once[memory] PASSED [ 55%]
+tests/test_ingest_queue.py::test_redrive_after_fix_ingests_once[moto] PASSED [ 66%]
+tests/test_ingest_queue.py::test_redrive_twice_does_not_duplicate[memory] PASSED [ 77%]
+tests/test_ingest_queue.py::test_redrive_twice_does_not_duplicate[moto] PASSED [ 88%]
+tests/test_ingest_queue.py::test_cli_queue_depth_and_redrive PASSED      [100%]
+
+============================== 9 passed in 1.88s ===============================
+exit code: 0
