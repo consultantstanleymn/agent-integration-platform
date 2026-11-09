@@ -36,6 +36,16 @@ class Settings(BaseSettings):
     authority_path: str = "docs/engagement/AUTHORITY.md"
     action_port: Literal["mcp", "inprocess"] = "inprocess"
     idempotency_ttl_hours: int = 72
+    blob_backend: Literal["local", "s3"] = "local"
+    queue_backend: Literal["memory", "sqs"] = "memory"
+    secret_backend: Literal["env", "aws"] = "env"
+    blob_root: str = "./aip-blobs"
+    s3_bucket: str = ""
+    sqs_queue_url: str = ""
+    sqs_dlq_url: str = ""
+    secret_prefix: str = ""  # prepended to a secret name when the backend is aws
+    aws_region: str = "us-east-1"
+    aws_endpoint_url: str = ""  # set only for an emulator such as moto
     case_max_steps: int = 6
     case_max_tokens: int = 4000
 
